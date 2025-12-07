@@ -495,13 +495,27 @@ ol {
 	height: 2px;
 	background: #e53637;
 	content: "";
-	-webkit-transition: all, 0.5s;
-	-o-transition: all, 0.5s;
-	transition: all, 0.5s;
+	-webkit-transition: all 0.5s;
+	-o-transition: all 0.5s;
+	transition: all 0.5s;
 	-webkit-transform: scale(0);
 	-ms-transform: scale(0);
 	transform: scale(0);
+	transform-origin: left;
 }
+
+/* Ativa o underline e muda a cor do texto quando clicado */
+.header__menu ul li.active a:after {
+	-webkit-transform: scale(1);
+	-ms-transform: scale(1);
+	transform: scale(1);
+}
+
+.header__menu ul li.active a {
+	color: #e53637;
+	font-weight: 700;
+}
+
 
 .header__nav__option {
 	text-align: right;

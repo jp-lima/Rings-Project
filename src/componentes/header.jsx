@@ -1,4 +1,9 @@
+import { useLocation, Link } from "react-router-dom";
+
 export default function Header() {
+  const location = useLocation();
+  const currentPath = location.pathname;
+
   return (
     <header className="header">
       {/* Top Bar */}
@@ -50,31 +55,41 @@ export default function Header() {
           <div className="col-lg-6 col-md-6">
             <nav className="header__menu mobile-menu">
               <ul>
-                <li className="active">
-                  <a href="/">Inicio</a>
+                <li className={currentPath === "/" ? "active" : ""}>
+                  <Link to="/">Inicio</Link>
                 </li>
 
-                <li>
-                  <a href="/shop">Produtos</a>
+                <li className={currentPath === "/shop" ? "active" : ""}>
+                  <Link to="/shop">Produtos</Link>
                 </li>
 
-                <li>
+                <li
+                  className={
+                    currentPath === "/about" ||
+                    currentPath === "/shop-details" ||
+                    currentPath === "/shopping-cart" ||
+                    currentPath === "/checkout" ||
+                    currentPath === "/blog-details"
+                      ? "active"
+                      : ""
+                  }
+                >
                   <a href="#">Paginas</a>
                   <ul className="dropdown">
-                    <li><a href="/about">Sobre nos</a></li>
-                    <li><a href="/shop-details">Detalhes da Compra</a></li>
-                    <li><a href="/shopping-cart">Carrinho</a></li>
-                    <li><a href="/checkout">Check Out</a></li>
-                    <li><a href="/blog-details">Blog Details</a></li>
+                    <li><Link to="/about">Sobre nós</Link></li>
+                    <li><Link to="/shop-details">Detalhes da Compra</Link></li>
+                    <li><Link to="/shopping-cart">Carrinho</Link></li>
+                    <li><Link to="/checkout">Check Out</Link></li>
+                    <li><Link to="/blog-details">Blog Details</Link></li>
                   </ul>
                 </li>
 
-                <li>
-                  <a href="/blog">Blog</a>
+                <li className={currentPath === "/blog" ? "active" : ""}>
+                  <Link to="/blog">Blog</Link>
                 </li>
 
-                <li>
-                  <a href="/contact">Contato</a>
+                <li className={currentPath === "/contact" ? "active" : ""}>
+                  <Link to="/contact">Contato</Link>
                 </li>
               </ul>
             </nav>
@@ -106,7 +121,6 @@ export default function Header() {
           <i className="fa fa-bars"></i>
         </div>
       </div>
-      
     </header>
   );
 }
