@@ -6,22 +6,6 @@ export default function About() {
       {/* Page Preloader */}
      
 
-      {/* Breadcrumb */}
-      <section className="breadcrumb-option">
-        <div className="container">
-          <div className="row">
-            <div className="col-lg-12">
-              <div className="breadcrumb__text">
-                <h4>About Us</h4>
-                <div className="breadcrumb__links">
-                  <a href="/">Home</a>
-                  <span>About Us</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* About Section */}
       <section className="about spad">
@@ -36,28 +20,25 @@ export default function About() {
           <div className="row">
             <div className="col-lg-4 col-md-4 col-sm-6">
               <div className="about__item">
-                <h4>Who We Are ?</h4>
+                <h4>Quem nós somos?</h4>
                 <p>
-                  Contextual advertising programs sometimes have strict policies that need to be
-                  adhered too. Let’s take Google as an example.
+                  Somos uma joalheria especializada na criação de alianças que representam momentos únicos e inesquecíveis. Nossa missão é transformar histórias de amor em peças exclusivas, combinando elegância, significado e qualidade superior. Cada aliança que produzimos carrega um propósito: celebrar união, compromisso e eternidade.
                 </p>
               </div>
             </div>
             <div className="col-lg-4 col-md-4 col-sm-6">
               <div className="about__item">
-                <h4>Who We Do ?</h4>
+                <h4>O que nós fazemos?</h4>
                 <p>
-                  In this digital generation where information can be easily obtained within seconds,
-                  business cards still have retained their importance.
+                  Produzimos alianças de noivado, casamento e compromisso com design refinado, acabamento impecável e materiais de alta durabilidade.
                 </p>
               </div>
             </div>
             <div className="col-lg-4 col-md-4 col-sm-6">
               <div className="about__item">
-                <h4>Why Choose Us</h4>
+                <h4>Porque nós escolher</h4>
                 <p>
-                  A two or three storey house is the ideal way to maximise the piece of earth on which
-                  our home sits, but for older or infirm people.
+                  Porque oferecemos alianças de alta qualidade com design exclusivo, personalização completa e um atendimento dedicado que transforma cada escolha em um momento especial.
                 </p>
               </div>
             </div>

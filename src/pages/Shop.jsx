@@ -10,23 +10,7 @@ import '../assets/Css/style.css';
 export default function Shop() {
   return (
     <>
-  {/* Breadcrumb Section Begin */}
-  <section className="breadcrumb-option">
-    <div className="container">
-      <div className="row">
-        <div className="col-lg-12">
-          <div className="breadcrumb__text">
-            <h4>Shop</h4>
-            <div className="breadcrumb__links">
-              <a href="./index.html">Home</a>
-              <span>Shop</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-  {/* Breadcrumb Section End */}
+  
 
   {/* Shop Section Begin */}
   <section className="shop spad">
@@ -42,7 +26,7 @@ export default function Shop() {
 
                 <div className="card">
                   <div className="card-heading">
-                    <a data-toggle="collapse" data-target="#collapseOne">Categories</a>
+                    <a data-toggle="collapse" data-target="#collapseOne">Categorias</a>
                   </div>
                   <div
                     id="collapseOne"
@@ -69,7 +53,7 @@ export default function Shop() {
                 {/* Branding */}
                 <div className="card">
                   <div className="card-heading">
-                    <a data-toggle="collapse" data-target="#collapseTwo">Branding</a>
+                    <a data-toggle="collapse" data-target="#collapseTwo">Marca</a>
                   </div>
                   <div
                     id="collapseTwo"
@@ -96,7 +80,7 @@ export default function Shop() {
                 {/* Price */}
                 <div className="card">
                   <div className="card-heading">
-                    <a data-toggle="collapse" data-target="#collapseThree">Filter Price</a>
+                    <a data-toggle="collapse" data-target="#collapseThree">Filtrar pelo preço</a>
                   </div>
                   <div
                     id="collapseThree"
