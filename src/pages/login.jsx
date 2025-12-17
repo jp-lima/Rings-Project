@@ -19,7 +19,7 @@ function Login() {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Lógica de autenticação aqui
-    fetch(`${url}/auth`, {
+    fetch(`${url}users/auth`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

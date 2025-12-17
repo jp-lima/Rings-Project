@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination, EffectFade } from 'swiper/modules';
 import 'swiper/css';
@@ -52,7 +53,7 @@ export default function MaleFashion() {
   const url = import.meta.env.VITE_API_URL;
   const [products, setProducts] = useState([]);
   useEffect(() => {
-    fetch(`${url}/products`, {
+    fetch(`${url}products/`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -68,6 +69,7 @@ export default function MaleFashion() {
         console.error("Error fetching products:", error);
       });
   }, [url]);
+   const navigate = useNavigate();
 
   return (
     <div>
@@ -294,9 +296,6 @@ export default function MaleFashion() {
 
                     <div className="product__item__text">
                       <h6>{product.name}</h6>
-                      <a href="#" className="add-cart">
-                        + Adicionar ao carrinho
-                      </a>
                       <div className="rating">
                         <i className="fa fa-star"></i>
                         <i className="fa fa-star"></i>
@@ -305,6 +304,12 @@ export default function MaleFashion() {
                         <i className="fa fa-star-o"></i>
                       </div>
                       <h5>R$ {product.price.toFixed(2)}</h5>
+                      <a onClick= {() => navigate(`/shopdetails/${product.id}`)} className="add-cart">
+                        Comprar
+                      </a>
+                      <a href="#" className="add-cart">
+                        + Adicionar ao carrinho
+                      </a>
                     </div>
                   </div>
                 </div>
