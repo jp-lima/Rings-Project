@@ -17,7 +17,7 @@ export default function ShoppingCart() {
 
 
 
- fetch(`${url}/carts`, {
+ fetch(`${url}/sales/carts`, {
   method: "POST",
   headers: {
     "Content-Type": "application/json",

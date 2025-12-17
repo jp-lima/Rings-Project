@@ -294,8 +294,11 @@ export default function MaleFashion() {
 
                     <div className="product__item__text">
                       <h6>{product.name}</h6>
-                      <a href="#" className="add-cart">
+                      <a href="/shopcart" className="add-cart">
                         + Adicionar ao carrinho
+                      </a>
+                      <a href="/shopcart" className="add-cart">
+                        + Comprar agora
                       </a>
                       <div className="rating">
                         <i className="fa fa-star"></i>
