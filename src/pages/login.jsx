@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import '../assets/Css/login.css';
+import { saveAuthData } from '../utils/dadosuser';
+
 
 function Login() {
-  const [dados , setDados ] = useState({
+  const [dados, setDados] = useState({
     email: '',
     password: ''
   });
@@ -11,13 +13,13 @@ function Login() {
     const { name, value } = e.target;
     setDados({
       ...dados,
-      [name]: value 
+      [name]: value
     });
   };
   const handleSubmit = (e) => {
     e.preventDefault();
     // Lógica de autenticação aqui
-    fetch (`${url}/auth`, {
+    fetch(`${url}/auth`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -26,11 +28,18 @@ function Login() {
       body: JSON.stringify({
         email: dados.email,
         password: dados.password
-      }) 
+      })
     })
       .then((response) => response.json())
       .then((data) => {
         console.log('Success:', data);
+
+        saveAuthData({
+          id: data.id,
+          email: data.email,
+          role: data.role,
+          token: data.token
+        });
       })
       .catch((error) => {
         console.error('Erro ao buscar dados:', error);
@@ -44,7 +53,7 @@ function Login() {
       <div className="login-container">
         <h2 className="login-title">Login</h2>
         <form className="login-form" onSubmit={handleSubmit}>
-          
+
           <div className="input-group">
             <label htmlFor="email" className="input-label">E-mail</label>
             <input
@@ -74,7 +83,7 @@ function Login() {
           <button type="submit" className="login-button">
             ENTRAR
           </button>
-          
+
         </form>
         <p className="forgot-password">
           <a href="/forgot-password">Esqueceu sua senha?</a>

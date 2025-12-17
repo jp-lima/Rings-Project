@@ -1,14 +1,49 @@
 
 import '../assets/Css/bootstrap.min.css';
 import '../assets/Css/font-awesome.min.css';
-import  '../assets/Css/elegant-icons.css';
-import  '../assets/Css/magnific-popup.css';
+import '../assets/Css/elegant-icons.css';
+import '../assets/Css/magnific-popup.css';
 import '../assets/Css/nice-select.css';
 import '../assets/Css/owl.carousel.min.css';
 import '../assets/Css/slicknav.min.css';
-import '../assets/Css/style.css';  
-
+import '../assets/Css/style.css';
+import { getAuthData } from '../utils/dadosuser'
 export default function ShoppingCart() {
+  const url = import.meta.env.VITE_API_URL;
+
+
+  const authData = getAuthData();
+  const token = authData?.token;
+
+
+
+ fetch(`${url}/carts`, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "accept": "application/json"
+  },
+  body: JSON.stringify({
+    authorization: token
+  })
+})
+  .then(async (response) => {
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Erro ao buscar carrinho');
+    }
+
+    return data;
+  })
+  .then((data) => {
+    console.log('Success:', data);
+  })
+  .catch((error) => {
+    console.error('Erro:', error.message);
+  });
+
+
   return (
     <>
 
