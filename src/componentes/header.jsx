@@ -1,7 +1,22 @@
 import { useLocation, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-
+import { useNavigate } from "react-router-dom";
+import { getAuthData } from '../utils/dadosuser'
 export default function Header() {
+
+
+  const navigate = useNavigate();
+  const authData = getAuthData();
+  const isLogged = !!authData?.token;
+  const handleProfileClick = () => {
+    const authData = getAuthData();
+
+    if (!authData || !authData.token) {
+      navigate("/login");
+    } else {
+      navigate("/perfil"); // ajuste se sua rota for outra
+    }
+  };
   const location = useLocation();
   const currentPath = location.pathname;
 
@@ -89,7 +104,7 @@ export default function Header() {
 
                   <button
                     style={{
-                      background: "#f6c200",
+                      background: "white",
                       border: "none",
                       width: "55px",
                       display: "flex",
@@ -201,28 +216,59 @@ export default function Header() {
             {/* Icons */}
             <div className="col-lg-3 col-md-3">
               <div className="header__nav__option">
-                <a href="/login">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="16" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                    <circle cx="12" cy="7" r="4" />
-                  </svg>
-                </a>
 
-                <a href="#">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="16" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-                  </svg>
-                </a>
+                {!isLogged ? (
+                  <Link
+                    to="/login"
+                    style={{
+                      padding: "8px 32px",
+                      borderRadius: "18px",
+                      background: "white",
+                      color: "#8C6A2D",
+                      fontSize: "13px",
+                      fontWeight: "500",
+                      textDecoration: "none",
+                      border: "1px solid #E3D3B5",
+                      transition: "all 0.25s ease"
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = "white";
+                      e.currentTarget.style.borderColor = "white";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = "white";
+                      e.currentTarget.style.borderColor = "white";
+                    }}
+                  >
+                    Fazer login
+                  </Link>
+                ) : (
+                  <>
+                    <a href="/perfil">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="16" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                      </svg>
+                    </a>
 
-                <a href="/shopcart">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="16" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <circle cx="9" cy="21" r="1" />
-                    <circle cx="20" cy="21" r="1" />
-                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
-                  </svg>
-                </a>
+                    <a href="#">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="16" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                      </svg>
+                    </a>
 
-                <div className="price">$0.00</div>
+                    <a href="/shopcart">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="16" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="9" cy="21" r="1" />
+                        <circle cx="20" cy="21" r="1" />
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                      </svg>
+                    </a>
+
+                    <div className="price">$0.00</div>
+                  </>
+                )}
+
               </div>
             </div>
           </div>
@@ -241,9 +287,9 @@ export default function Header() {
                   <li className={currentPath === "/contact" ? "active" : ""}>
                     <Link to="/contact">Contato</Link>
                   </li>
-                    <li className={currentPath === "/medida" ? "active" : ""}>
-                  <Link to="/medida">Medida Virtual</Link>
-                </li>
+                  <li className={currentPath === "/medida" ? "active" : ""}>
+                    <Link to="/medida">Medida Virtual</Link>
+                  </li>
                 </ul>
               </nav>
             </div>

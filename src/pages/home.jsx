@@ -53,7 +53,7 @@ export default function MaleFashion() {
   const url = import.meta.env.VITE_API_URL;
   const [products, setProducts] = useState([]);
   useEffect(() => {
-    fetch(`${url}products/`, {
+    fetch(`${url}/products/`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

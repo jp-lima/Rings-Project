@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import '../assets/Css/login.css';
 import { saveAuthData } from '../utils/dadosuser';
+import { useNavigate } from 'react-router-dom';
 
 
 function Login() {
+
+  const navigate = useNavigate();
   const [dados, setDados] = useState({
     email: '',
     password: ''
@@ -19,7 +22,7 @@ function Login() {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Lógica de autenticação aqui
-    fetch(`${url}users/auth`, {
+    fetch(`${url}/users/auth`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -33,6 +36,7 @@ function Login() {
       .then((response) => response.json())
       .then((data) => {
         console.log('Success:', data);
+        
 
         saveAuthData({
           id: data.id,
@@ -40,6 +44,8 @@ function Login() {
           role: data.role,
           token: data.token
         });
+
+        navigate('/');
       })
       .catch((error) => {
         console.error('Erro ao buscar dados:', error);
