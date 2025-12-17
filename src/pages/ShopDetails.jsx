@@ -1,4 +1,8 @@
-import React, { useEffect } from "react";
+import React, { use, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import Select from "react-select";
+import { useNavigate } from "react-router-dom";
+
 
 // NOTE:
 // - This component is a direct JSX conversion of the original HTML template.
@@ -15,6 +19,91 @@ export default function ShopDetails() {
       if (bg) el.style.backgroundImage = `url(${bg})`;
     });
   }, []);
+  const [product, setProduct] = useState({});
+  const [selectedSize, setSelectedSize] = useState(null);
+  const [produtos, setProdutos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const url = import.meta.env.VITE_API_URL;
+  const { id } = useParams();
+
+  // Opções de tamanhos (Aro 18 até 27)
+  const sizeOptions = [
+    { value: 18, label: 'Aro 18' },
+    { value: 19, label: 'Aro 19' },
+    { value: 20, label: 'Aro 20' },
+    { value: 21, label: 'Aro 21' },
+    { value: 22, label: 'Aro 22' },
+    { value: 23, label: 'Aro 23' },
+    { value: 24, label: 'Aro 24' },
+    { value: 25, label: 'Aro 25' },
+    { value: 26, label: 'Aro 26' },
+    { value: 27, label: 'Aro 27' }
+  ];
+
+  // Estilos customizados para o react-select
+  const customStyles = {
+    control: (provided, state) => ({
+      ...provided,
+      minHeight: '50px',
+      borderColor: state.isFocused ? '#d4a574' : '#e1e1e1',
+      boxShadow: state.isFocused ? '0 0 0 1px #d4a574' : 'none',
+      '&:hover': {
+        borderColor: '#d4a574'
+      }
+    }),
+    option: (provided, state) => ({
+      ...provided,
+      backgroundColor: state.isSelected ? '#d4a574' : state.isFocused ? '#f5f5f5' : 'white',
+      color: state.isSelected ? 'white' : '#111',
+      cursor: 'pointer',
+      '&:hover': {
+        backgroundColor: state.isSelected ? '#d4a574' : '#f5f5f5'
+      }
+    })
+  };
+  // Buscar produto atual e produtos relacionados em paralelo
+  useEffect(() => {
+    setLoading(true);
+    
+    // Fazer ambas requisições ao mesmo tempo
+    Promise.all([
+      fetch(`${url}products/${id}`).then(res => res.json()),
+      fetch(`${url}products/`).then(res => res.json())
+    ])
+      .then(([productData, allProducts]) => {
+        console.log("Product Details:", productData);
+        console.log("Todos os produtos:", allProducts);
+        
+        setProduct(productData[0] || {});
+        setProdutos(allProducts || []);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+        setLoading(false);
+      });
+  }, [id, url]);
+  const navigate = useNavigate();
+
+
+  // Mostrar loading enquanto carrega
+  if (loading) {
+    return (
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        minHeight: '60vh',
+        flexDirection: 'column',
+        gap: '20px'
+      }}>
+        <div className="spinner-border text-warning" role="status" style={{ width: '3rem', height: '3rem' }}>
+          <span className="sr-only">Carregando...</span>
+        </div>
+        <p style={{ color: '#666', fontSize: '16px' }}>Carregando produto...</p>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -31,6 +120,7 @@ export default function ShopDetails() {
                 </div>
               </div>
             </div>
+            product
             <div className="row">
               <div className="col-lg-3 col-md-3">
                 <ul className="nav nav-tabs" role="tablist">
@@ -91,12 +181,13 @@ export default function ShopDetails() {
             </div>
           </div>
         </div>
+
         <div className="product__details__content">
           <div className="container">
             <div className="row d-flex justify-content-center">
               <div className="col-lg-8">
                 <div className="product__details__text">
-                  <h4>Hooded thermal anorak</h4>
+                  <h4>{product.name || ""}</h4>
                   <div className="rating">
                     <i className="fa fa-star" />
                     <i className="fa fa-star" />
@@ -106,7 +197,7 @@ export default function ShopDetails() {
                     <span> - 5 Reviews</span>
                   </div>
                   <h3>
-                    $270.00 <span>70.00</span>
+                    R$ {product.price ? Number(product.price).toFixed(2) : '0.00'}
                   </h3>
                   <p>
                     Coat with quilted lining and an adjustable hood. Featuring long sleeves with adjustable
@@ -115,41 +206,23 @@ export default function ShopDetails() {
                   </p>
                   <div className="product__details__option">
                     <div className="product__details__option__size">
-                      <span>Size:</span>
-                      <label htmlFor="xxl">
-                        xxl
-                        <input type="radio" id="xxl" name="size" />
-                      </label>
-                      <label className="active" htmlFor="xl">
-                        xl
-                        <input type="radio" id="xl" name="size" />
-                      </label>
-                      <label htmlFor="l">
-                        l
-                        <input type="radio" id="l" name="size" />
-                      </label>
-                      <label htmlFor="sm">
-                        s
-                        <input type="radio" id="sm" name="size" />
-                      </label>
-                    </div>
-                    <div className="product__details__option__color">
-                      <span>Color:</span>
-                      <label className="c-1" htmlFor="sp-1">
-                        <input type="radio" id="sp-1" name="color" />
-                      </label>
-                      <label className="c-2" htmlFor="sp-2">
-                        <input type="radio" id="sp-2" name="color" />
-                      </label>
-                      <label className="c-3" htmlFor="sp-3">
-                        <input type="radio" id="sp-3" name="color" />
-                      </label>
-                      <label className="c-4" htmlFor="sp-4">
-                        <input type="radio" id="sp-4" name="color" />
-                      </label>
-                      <label className="c-9" htmlFor="sp-9">
-                        <input type="radio" id="sp-9" name="color" />
-                      </label>
+                      <span style={{ display: 'block', marginBottom: '10px', fontWeight: '600' }}>
+                        Selecione o Tamanho (Aro):
+                      </span>
+                      <Select
+                        options={sizeOptions}
+                        value={selectedSize}
+                        onChange={setSelectedSize}
+                        styles={customStyles}
+                        placeholder="Escolha o tamanho..."
+                        isSearchable={false}
+                      />
+                      {selectedSize && (
+                        <p style={{ marginTop: '10px', fontSize: '13px', color: '#666' }}>
+                          <i className="fa fa-info-circle" style={{ marginRight: '5px' }}></i>
+                          Não sabe seu tamanho? <a href="/medida" style={{ color: '#d4a574', fontWeight: '600' }}>Meça aqui!</a>
+                        </p>
+                      )}
                     </div>
                   </div>
                   <div className="product__details__cart__option">
@@ -159,33 +232,8 @@ export default function ShopDetails() {
                       </div>
                     </div>
                     <a href="#" className="primary-btn">
-                      add to cart
+                      Comprar
                     </a>
-                  </div>
-                  <div className="product__details__btns__option">
-                    <a href="#">
-                      <i className="fa fa-heart" /> add to wishlist
-                    </a>
-                    <a href="#">
-                      <i className="fa fa-exchange" /> Add To Compare
-                    </a>
-                  </div>
-                  <div className="product__details__last__option">
-                    <h5>
-                      <span>Guaranteed Safe Checkout</span>
-                    </h5>
-                    <img src="img/shop-details/details-payment.png" alt="" />
-                    <ul>
-                      <li>
-                        <span>SKU:</span> 3812912
-                      </li>
-                      <li>
-                        <span>Categories:</span> Clothes
-                      </li>
-                      <li>
-                        <span>Tag:</span> Clothes, Skin, Body
-                      </li>
-                    </ul>
                   </div>
                 </div>
               </div>
@@ -333,8 +381,15 @@ export default function ShopDetails() {
             </div>
           </div>
           <div className="row">
-            {/** Product 1 **/}
-            <div className="col-lg-3 col-md-6 col-sm-6 col-sm-6">
+            {produtos
+              .slice()
+              .sort((a, b) => b.sales - a.sales)
+              .slice(0, 4)
+              .map((produtos) => (
+                <div
+                  key={produtos.id}
+                  className="col-lg-3 col-md-6 col-sm-6 col-sm-6"
+                >
               <div className="product__item">
                 <div className="product__item__pic set-bg" data-setbg="img/product/product-1.jpg">
                   <span className="label">New</span>
@@ -357,10 +412,7 @@ export default function ShopDetails() {
                   </ul>
                 </div>
                 <div className="product__item__text">
-                  <h6>Piqué Biker Jacket</h6>
-                  <a href="#" className="add-cart">
-                    + Add To Cart
-                  </a>
+                  <h6>{produtos.name}</h6>
                   <div className="rating">
                     <i className="fa fa-star-o" />
                     <i className="fa fa-star-o" />
@@ -368,172 +420,18 @@ export default function ShopDetails() {
                     <i className="fa fa-star-o" />
                     <i className="fa fa-star-o" />
                   </div>
-                  <h5>$67.24</h5>
-                  <div className="product__color__select">
-                    <label htmlFor="pc-1">
-                      <input type="radio" id="pc-1" name="pc-1" />
-                    </label>
-                    <label className="active black" htmlFor="pc-2">
-                      <input type="radio" id="pc-2" name="pc-2" />
-                    </label>
-                    <label className="grey" htmlFor="pc-3">
-                      <input type="radio" id="pc-3" name="pc-3" />
-                    </label>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/** Product 2 **/}
-            <div className="col-lg-3 col-md-6 col-sm-6 col-sm-6">
-              <div className="product__item">
-                <div className="product__item__pic set-bg" data-setbg="img/product/product-2.jpg">
-                  <ul className="product__hover">
-                    <li>
-                      <a href="#">
-                        <img src="img/icon/heart.png" alt="" />
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <img src="img/icon/compare.png" alt="" /> <span>Compare</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <img src="img/icon/search.png" alt="" />
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-                <div className="product__item__text">
-                  <h6>Piqué Biker Jacket</h6>
+                  <h5>${produtos.price ? Number(produtos.price).toFixed(2) : '0.00' || "Carregando"}</h5>
                   <a href="#" className="add-cart">
-                    + Add To Cart
+                    Adicionar ao carrinho
                   </a>
-                  <div className="rating">
-                    <i className="fa fa-star-o" />
-                    <i className="fa fa-star-o" />
-                    <i className="fa fa-star-o" />
-                    <i className="fa fa-star-o" />
-                    <i className="fa fa-star-o" />
-                  </div>
-                  <h5>$67.24</h5>
-                  <div className="product__color__select">
-                    <label htmlFor="pc-4">
-                      <input type="radio" id="pc-4" name="pc-4" />
-                    </label>
-                    <label className="active black" htmlFor="pc-5">
-                      <input type="radio" id="pc-5" name="pc-5" />
-                    </label>
-                    <label className="grey" htmlFor="pc-6">
-                      <input type="radio" id="pc-6" name="pc-6" />
-                    </label>
-                  </div>
+                  <br />
+                  <a onClick={() => navigate(`/shopdetails/${produtos.id}`)} className="add-cart">
+                    Ver
+                  </a>
                 </div>
               </div>
             </div>
-
-            {/** Product 3 **/}
-            <div className="col-lg-3 col-md-6 col-sm-6 col-sm-6">
-              <div className="product__item sale">
-                <div className="product__item__pic set-bg" data-setbg="img/product/product-3.jpg">
-                  <span className="label">Sale</span>
-                  <ul className="product__hover">
-                    <li>
-                      <a href="#">
-                        <img src="img/icon/heart.png" alt="" />
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <img src="img/icon/compare.png" alt="" /> <span>Compare</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <img src="img/icon/search.png" alt="" />
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-                <div className="product__item__text">
-                  <h6>Multi-pocket Chest Bag</h6>
-                  <a href="#" className="add-cart">
-                    + Add To Cart
-                  </a>
-                  <div className="rating">
-                    <i className="fa fa-star" />
-                    <i className="fa fa-star" />
-                    <i className="fa fa-star" />
-                    <i className="fa fa-star" />
-                    <i className="fa fa-star-o" />
-                  </div>
-                  <h5>$43.48</h5>
-                  <div className="product__color__select">
-                    <label htmlFor="pc-7">
-                      <input type="radio" id="pc-7" name="pc-7" />
-                    </label>
-                    <label className="active black" htmlFor="pc-8">
-                      <input type="radio" id="pc-8" name="pc-8" />
-                    </label>
-                    <label className="grey" htmlFor="pc-9">
-                      <input type="radio" id="pc-9" name="pc-9" />
-                    </label>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/** Product 4 **/}
-            <div className="col-lg-3 col-md-6 col-sm-6 col-sm-6">
-              <div className="product__item">
-                <div className="product__item__pic set-bg" data-setbg="img/product/product-4.jpg">
-                  <ul className="product__hover">
-                    <li>
-                      <a href="#">
-                        <img src="img/icon/heart.png" alt="" />
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <img src="img/icon/compare.png" alt="" /> <span>Compare</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <img src="img/icon/search.png" alt="" />
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-                <div className="product__item__text">
-                  <h6>Diagonal Textured Cap</h6>
-                  <a href="#" className="add-cart">
-                    + Add To Cart
-                  </a>
-                  <div className="rating">
-                    <i className="fa fa-star-o" />
-                    <i className="fa fa-star-o" />
-                    <i className="fa fa-star-o" />
-                    <i className="fa fa-star-o" />
-                    <i className="fa fa-star-o" />
-                  </div>
-                  <h5>$60.9</h5>
-                  <div className="product__color__select">
-                    <label htmlFor="pc-10">
-                      <input type="radio" id="pc-10" name="pc-10" />
-                    </label>
-                    <label className="active black" htmlFor="pc-11">
-                      <input type="radio" id="pc-11" name="pc-11" />
-                    </label>
-                    <label className="grey" htmlFor="pc-12">
-                      <input type="radio" id="pc-12" name="pc-12" />
-                    </label>
-                  </div>
-                </div>
-              </div>
-            </div>
+              ))}
           </div>
         </div>
       </section>
