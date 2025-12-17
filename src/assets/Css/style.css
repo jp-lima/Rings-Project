@@ -166,8 +166,8 @@ ol {
 	font-weight: 700;
 	text-transform: uppercase;
 	padding: 14px 30px;
-	color: #ffffff;
-	background: #000000;
+	color: var(--primary-color);
+	background: var(--primary-color);
 	letter-spacing: 4px;
 }
 
@@ -1115,8 +1115,8 @@ ol {
 .product__item__text .add-cart {
   display: inline-block;
   font-size: 14px;
-  color: #fff;
-  background: #d4af37;
+  color: var(--primary-color);
+  background: var(--primary-color);
   padding: 6px 15px;
   border-radius: 4px;
   font-weight: 700;
