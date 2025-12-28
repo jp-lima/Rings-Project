@@ -2,7 +2,6 @@ import { useLocation, Link } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAuthData } from '../utils/dadosuser'
-import Subheader from "./subheader.jsx";
 export default function Header() {
 
 

@@ -6,40 +6,47 @@ export default function MegaMenu({ category, isOpen }) {
     aliancas: {
       sections: [
         {
+          title: "Alianças",
           items: [
-            "Aliança de Moedas",
-            "Alianças de prata",
-            "Alianças de Ouro 10k",
+            "Moeda Antiga com Banho a Ouro 18k",
+            "Prata",
+            "Ouro 10k",
           ]
         },
       ]
     },
     brincos: {
       sections: [
+        
         {
+          title: "Brincos",
           items: [
-           "Moeda antiga com banho a ouro 18k"
+           "Moeda Antiga com Banho a Ouro 18k"
           ]
         },
       ]
     },
     pingentes: {
+
       sections: [
         {
+          title: "Pingentes",
           items: [
-            "Moeda antiga com banho a ouro 18k"
+             "Moeda Antiga com Banho a Ouro 18k"
           ]
         },
       ]
     },
     aneis: {
+
       sections: [
         {
+          title: "Anéis",
           items: [
-            "Anéis de formatura",
-            "Anéis/Masculinos Moeda",
-            "Anéis Solitários e Aparadores Moeda",
-            "Anéis de Prata",
+            "Formatura",
+            "Masculinos Moeda",
+            "Solitários e Aparadores Moeda",
+            "Prata",
           ]
         },
       ]
@@ -55,12 +62,11 @@ export default function MegaMenu({ category, isOpen }) {
       <div className="mega-menu__content">
         {content.sections.map((section, index) => (
           <div key={index} className="mega-menu__section">
-            <h3 className="mega-menu__title">{section.title}</h3>
             {section.items.length > 0 && (
               <ul className="mega-menu__list">
                 {section.items.map((item, idx) => (
                   <li key={idx}>
-                    <Link to={`/shop?filter=${item}`}>{item}</Link>
+                    <Link to={`/shop?title=${section.title}&filter=${item}`}>{item}</Link>
                   </li>
                 ))}
               </ul>

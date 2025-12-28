@@ -1,4 +1,7 @@
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import Select from "react-select";
+import { FILTER_CONFIG } from "../utils/filters";
 
 import "../assets/Css/bootstrap.min.css";
 import "../assets/Css/font-awesome.min.css";
@@ -11,17 +14,35 @@ import "../assets/Css/style.css";
 
 export default function Shop() {
   const url = import.meta.env.VITE_API_URL;
+  const [searchParams] = useSearchParams();
+  const filter = searchParams.get("filter");
+  console.log("Filtro da URL:", filter);
+  const title = searchParams.get("title");
+  console.log("Título da URL:", title);
 
   const [products, setProducts] = useState([]);
   const [displayProducts, setDisplayProducts] = useState([]);
   const [sort, setSort] = useState("");
   const [renderKey, setRenderKey] = useState(0);
-  
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 9; // Quantidade de itens por página
+
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentProducts = displayProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+  const totalPages = Math.ceil(displayProducts.length / productsPerPage);
+
+  // Função para mudar de página e rolar para o topo
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    window.scrollTo(0, 0);
+  };
   // Filtros múltiplos
   const [categoryFilters, setCategoryFilters] = useState([]);
   const [brandFilters, setBrandFilters] = useState([]);
   const [priceFilters, setPriceFilters] = useState([]);
-  
+
   // Estados para controlar os acordeões
   const [openAccordions, setOpenAccordions] = useState({
     categories: true,
@@ -54,28 +75,47 @@ export default function Shop() {
     carregarProdutos();
   }, [url]);
 
+  // Marcar automaticamente o filtro quando vier da URL
+  useEffect(() => {
+    if (filter && !categoryFilters.includes(filter)) {
+      setCategoryFilters([filter]);
+    }
+  }, [filter]);
+
+  // Limpar filtros quando trocar de categoria (title)
+  useEffect(() => {
+    if (title) {
+      setCategoryFilters([]);
+
+      // Se ainda tiver filter na URL, adicionar novamente
+      if (filter) {
+        setCategoryFilters([filter]);
+      }
+    }
+  }, [title]);
+
   function applyFiltersAndSort() {
     let lista = [...products];
 
-    // Aplicar filtro de categorias
+    // 1. Filtrar por tipo (title) - Ex: "Alianças", "Anéis"
+    if (title) {
+      lista = lista.filter(product =>
+        product.type && product.type.toLowerCase() === title.toLowerCase()
+      );
+    }
+
+    // 2. Filtrar por material (apenas checkboxes manuais, ignorar filter da URL se houver mudanças)
     if (categoryFilters.length > 0) {
-      lista = lista.filter(product => 
-        categoryFilters.includes(product.category)
-      );
+      lista = lista.filter(product => {
+        if (!product.material) return false;
+        return categoryFilters.includes(product.material);
+      });
     }
-
-    // Aplicar filtro de marcas
-    if (brandFilters.length > 0) {
-      lista = lista.filter(product => 
-        brandFilters.includes(product.brand)
-      );
-    }
-
     // Aplicar filtros de preço
     if (priceFilters.length > 0) {
       lista = lista.filter(product => {
         const price = Number(product.price);
-        return priceFilters.some(filter => 
+        return priceFilters.some(filter =>
           price >= filter.min && price <= filter.max
         );
       });
@@ -103,11 +143,78 @@ export default function Shop() {
 
   useEffect(() => {
     applyFiltersAndSort();
-  }, [categoryFilters, brandFilters, priceFilters, sort]);
+    setCurrentPage(1)
+  }, [products, title, categoryFilters, brandFilters, priceFilters, sort]);
 
   function handleSort(value) {
     setSort(value);
   }
+
+  // Opções para o React Select
+  const sortOptions = [
+    { value: "", label: "Padrão" },
+    { value: "az", label: "A-Z" },
+    { value: "price_low", label: "Preço: Menor para o Maior" },
+    { value: "price_high", label: "Preço: Maior para o Menor" },
+    { value: "sales", label: "Mais Vendidos" }
+  ];
+
+  // Estilo customizado para o React Select
+  const customSelectStyles = {
+    control: (base, state) => ({
+      ...base,
+      minHeight: '38px',
+      borderRadius: '8px',
+      border: state.isFocused ? '2px solid #d4af37' : '2px solid #E3C58D',
+      boxShadow: state.isFocused ? '0 0 0 3px rgba(212, 175, 55, 0.1)' : 'none',
+      cursor: 'pointer',
+      textAlign: 'left',
+      transition: 'all 0.3s ease',
+      '&:hover': {
+        borderColor: '#d4af37'
+      }
+    }),
+    container: (base) => ({
+      ...base,
+  
+    }),
+    option: (base, state) => ({
+      ...base,
+      backgroundColor: state.isSelected 
+        ? '#d4af37' 
+        : state.isFocused 
+        ? 'rgba(212, 175, 55, 0.1)' 
+        : 'white',
+      color: state.isSelected ? 'white' : '#333',
+      cursor: 'pointer',
+      padding: '10px 15px',
+      transition: 'all 0.2s ease',
+      '&:active': {
+        backgroundColor: '#d4af37'
+      }
+    }),
+    singleValue: (base) => ({
+      ...base,
+      color: '#333',
+      fontWeight: '500'
+    }),
+    placeholder: (base) => ({
+      ...base,
+      color: '#999',
+
+    }),
+    dropdownIndicator: (base, state) => ({
+      ...base,
+      color: state.isFocused ? '#d4af37' : '#999',
+      transition: 'all 0.3s ease',
+      '&:hover': {
+        color: '#d4af37'
+      }
+    }),
+    indicatorSeparator: () => ({
+      display: 'none'
+    })
+  };
 
   // Toggle de categoria
   function toggleCategoryFilter(category) {
@@ -135,7 +242,7 @@ export default function Shop() {
   function togglePriceFilter(min, max) {
     setPriceFilters(prev => {
       const exists = prev.find(f => f.min === min && f.max === max);
-      
+
       if (exists) {
         return prev.filter(f => !(f.min === min && f.max === max));
       } else {
@@ -238,8 +345,67 @@ export default function Shop() {
         .clear-filters-btn:hover {
           background: #c59563;
         }
+
+        .pagination__option {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          margin-top: 30px;
+        }
+
+        .pagination__option a {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          min-width: 40px;
+          height: 40px;
+          padding: 0 12px;
+          border: 2px solid #e5e5e5;
+          border-radius: 8px;
+          color: #666;
+          font-weight: 500;
+          font-size: 14px;
+          text-decoration: none;
+          transition: all 0.3s ease;
+          background: #fff;
+        }
+
+        .pagination__option a:hover {
+          border-color: #d4af37;
+          color: #d4af37;
+          transform: translateY(-2px);
+          box-shadow: 0 4px 8px rgba(212, 175, 55, 0.2);
+        }
+
+        .pagination__option a.active {
+          background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
+          border-color: #d4af37;
+          color: #fff;
+          font-weight: 700;
+          box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+        }
+
+        .pagination__option a.arrow {
+          background: #f8f8f8;
+          border-color: #ddd;
+        }
+
+        .pagination__option a.arrow:hover {
+          background: #d4af37;
+          border-color: #d4af37;
+          color: #fff;
+        }
+
+        .pagination__option a.arrow i {
+          font-size: 16px;
+        }
+
+        .pagination__option a:active {
+          transform: translateY(0);
+        }
       `}</style>
-      
+
       {/* Shop Section Begin */}
       <section className="shop spad">
         <div className="container">
@@ -250,17 +416,17 @@ export default function Shop() {
               <div className="shop__sidebar">
                 <div className="shop__sidebar__accordion">
                   <div className="accordion" id="accordionExample">
-                    {console.log(products)}
                     {/* Categories */}
                     <div className="card">
                       <div className="card-heading">
-                        <a 
+                        <a
                           href="#"
                           onClick={(e) => { e.preventDefault(); toggleAccordion('categories'); }}
                           style={{ cursor: 'pointer' }}
                           className={openAccordions.categories ? 'open' : ''}
                         >
-                          Categorias {categoryFilters.length > 0 && `(${categoryFilters.length})`}
+                          {searchParams.get("title")}
+                          {categoryFilters.length > 0 && `(${categoryFilters.length})`}
                         </a>
                       </div>
                       <div
@@ -269,190 +435,26 @@ export default function Shop() {
                         <div className="card-body">
                           <div className="shop__sidebar__categories">
                             <ul>
-                              <li>
-                                <label className="filter-checkbox">
-                                  <input
-                                    type="checkbox"
-                                    checked={categoryFilters.includes("Men")}
-                                    onChange={() => toggleCategoryFilter("Men")}
-                                  />
-                                  <span>Men (20)</span>
-                                </label>
-                              </li>
-                              <li>
-                                <label className="filter-checkbox">
-                                  <input
-                                    type="checkbox"
-                                    checked={categoryFilters.includes("Women")}
-                                    onChange={() => toggleCategoryFilter("Women")}
-                                  />
-                                  <span>Women (20)</span>
-                                </label>
-                              </li>
-                              <li>
-                                <label className="filter-checkbox">
-                                  <input
-                                    type="checkbox"
-                                    checked={categoryFilters.includes("Bags")}
-                                    onChange={() => toggleCategoryFilter("Bags")}
-                                  />
-                                  <span>Bags (20)</span>
-                                </label>
-                              </li>
-                              <li>
-                                <label className="filter-checkbox">
-                                  <input
-                                    type="checkbox"
-                                    checked={categoryFilters.includes("Clothing")}
-                                    onChange={() => toggleCategoryFilter("Clothing")}
-                                  />
-                                  <span>Clothing (20)</span>
-                                </label>
-                              </li>
-                              <li>
-                                <label className="filter-checkbox">
-                                  <input
-                                    type="checkbox"
-                                    checked={categoryFilters.includes("Shoes")}
-                                    onChange={() => toggleCategoryFilter("Shoes")}
-                                  />
-                                  <span>Shoes (20)</span>
-                                </label>
-                              </li>
-                              <li>
-                                <label className="filter-checkbox">
-                                  <input
-                                    type="checkbox"
-                                    checked={categoryFilters.includes("Accessories")}
-                                    onChange={() => toggleCategoryFilter("Accessories")}
-                                  />
-                                  <span>Accessories (20)</span>
-                                </label>
-                              </li>
-                              <li>
-                                <label className="filter-checkbox">
-                                  <input
-                                    type="checkbox"
-                                    checked={categoryFilters.includes("Kids")}
-                                    onChange={() => toggleCategoryFilter("Kids")}
-                                  />
-                                  <span>Kids (20)</span>
-                                </label>
-                              </li>
+                              {FILTER_CONFIG[title]?.map(item => (
+                                <li key={item}>
+                                  <label className="filter-checkbox">
+                                    <input
+                                      type="checkbox"
+                                      checked={categoryFilters.includes(item)}
+                                      onChange={() => toggleCategoryFilter(item)}
+                                    />
+                                    <span>{item} </span>
+                                  </label>
+                                </li>
+                              ))}
                             </ul>
                           </div>
                         </div>
                       </div>
                     </div>
-
-                    {/* Brand */}
                     <div className="card">
                       <div className="card-heading">
-                        <a 
-                          href="#"
-                          onClick={(e) => { e.preventDefault(); toggleAccordion('brand'); }}
-                          style={{ cursor: 'pointer' }}
-                          className={openAccordions.brand ? 'open' : ''}
-                        >
-                          Marca {brandFilters.length > 0 && `(${brandFilters.length})`}
-                        </a>
-                      </div>
-                      <div
-                        className={`collapse ${openAccordions.brand ? 'show' : ''}`}
-                      >
-                        <div className="card-body">
-                          <div className="shop__sidebar__brand">
-                            <ul>
-                              <li>
-                                <label className="filter-checkbox">
-                                  <input
-                                    type="checkbox"
-                                    checked={brandFilters.includes("Louis Vuitton")}
-                                    onChange={() => toggleBrandFilter("Louis Vuitton")}
-                                  />
-                                  <span>Louis Vuitton</span>
-                                </label>
-                              </li>
-                              <li>
-                                <label className="filter-checkbox">
-                                  <input
-                                    type="checkbox"
-                                    checked={brandFilters.includes("Chanel")}
-                                    onChange={() => toggleBrandFilter("Chanel")}
-                                  />
-                                  <span>Chanel</span>
-                                </label>
-                              </li>
-                              <li>
-                                <label className="filter-checkbox">
-                                  <input
-                                    type="checkbox"
-                                    checked={brandFilters.includes("Hermes")}
-                                    onChange={() => toggleBrandFilter("Hermes")}
-                                  />
-                                  <span>Hermes</span>
-                                </label>
-                              </li>
-                              <li>
-                                <label className="filter-checkbox">
-                                  <input
-                                    type="checkbox"
-                                    checked={brandFilters.includes("Gucci")}
-                                    onChange={() => toggleBrandFilter("Gucci")}
-                                  />
-                                  <span>Gucci</span>
-                                </label>
-                              </li>
-                              <li>
-                                <label className="filter-checkbox">
-                                  <input
-                                    type="checkbox"
-                                    checked={brandFilters.includes("Prada")}
-                                    onChange={() => toggleBrandFilter("Prada")}
-                                  />
-                                  <span>Prada</span>
-                                </label>
-                              </li>
-                              <li>
-                                <label className="filter-checkbox">
-                                  <input
-                                    type="checkbox"
-                                    checked={brandFilters.includes("Dolce & Gabbana")}
-                                    onChange={() => toggleBrandFilter("Dolce & Gabbana")}
-                                  />
-                                  <span>Dolce & Gabbana</span>
-                                </label>
-                              </li>
-                              <li>
-                                <label className="filter-checkbox">
-                                  <input
-                                    type="checkbox"
-                                    checked={brandFilters.includes("Balenciaga")}
-                                    onChange={() => toggleBrandFilter("Balenciaga")}
-                                  />
-                                  <span>Balenciaga</span>
-                                </label>
-                              </li>
-                              <li>
-                                <label className="filter-checkbox">
-                                  <input
-                                    type="checkbox"
-                                    checked={brandFilters.includes("Versace")}
-                                    onChange={() => toggleBrandFilter("Versace")}
-                                  />
-                                  <span>Versace</span>
-                                </label>
-                              </li>
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Price */}
-                    <div className="card">
-                      <div className="card-heading">
-                        <a 
+                        <a
                           href="#"
                           onClick={(e) => { e.preventDefault(); toggleAccordion('price'); }}
                           style={{ cursor: 'pointer' }}
@@ -535,7 +537,7 @@ export default function Shop() {
 
                     {/* Botão de Limpar Filtros */}
                     {totalActiveFilters > 0 && (
-                      <button 
+                      <button
                         onClick={clearAllFilters}
                         className="clear-filters-btn"
                       >
@@ -562,17 +564,15 @@ export default function Shop() {
                       </div>
                       <div className="col-lg-5 col-md-5">
                         <div className="shop__product__option__right">
-                          <p>Ordenar por:</p>
-                          <select
-                            value={sort}
-                            onChange={(e) => handleSort(e.target.value)}
-                          >
-                            <option value="">Padrão</option>
-                            <option value="az">A-Z</option>
-                            <option value="price_low">Do menor para o maior</option>
-                            <option value="price_high">Do maior para o menor</option>
-                            <option value="sales">Mais vendidos</option>
-                          </select>
+                          <p style={{ marginBottom: '10px', fontWeight: '600', color: '#333' }}>Ordenar por:</p>
+                          <Select
+                            value={sortOptions.find(option => option.value === sort)}
+                            onChange={(option) => handleSort(option.value)}
+                            options={sortOptions}
+                            styles={customSelectStyles}
+                            placeholder="Selecione..."
+                            isSearchable={false}
+                          />
                         </div>
                       </div>
                     </div>
@@ -580,7 +580,7 @@ export default function Shop() {
                 </div>
 
                 {/* PRODUCTS GRID */}
-                {displayProducts.map((product, index) => (
+                {currentProducts.map((product, index) => (
                   <div key={`${product.id}-${renderKey}-${index}`} className="col-lg-4 col-md-6 col-sm-6">
                     <div className="product__item">
                       <div
@@ -596,7 +596,7 @@ export default function Shop() {
                         </ul>
                       </div>
                       <div className="product__item__text">
-                        <h6><a href="#" style={{color: '#d4af37'}}>{product.name}</a></h6>
+                        <h6><a href="#" style={{ color: '#d4af37' }}>{product.name}</a></h6>
                         <div className="product__price">
                           R$ {product.price.toFixed(2)}
                         </div>
@@ -608,11 +608,39 @@ export default function Shop() {
                 {/* Pagination */}
                 <div className="col-lg-12 text-center">
                   <div className="pagination__option">
-                    <a href="#" style={{color: '#d4af37'}}><i className="fa fa-angle-left" /></a>
-                    <a href="#" style={{color: '#d4af37'}}>1</a>
-                    <a href="#" style={{color: '#d4af37'}}>2</a>
-                    <a href="#" style={{color: '#d4af37'}}>3</a>
-                    <a href="#" style={{color: '#d4af37'}}><i className="fa fa-angle-right" /></a>
+                    {currentPage > 1 && (
+                      <a 
+                        href="#" 
+                        className="arrow"
+                        onClick={(e) => { e.preventDefault(); paginate(currentPage - 1); }}
+                        title="Página anterior"
+                      >
+                        <i className="fa fa-angle-left" />
+                      </a>
+                    )}
+                    
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((num) => (
+                      <a
+                        key={num}
+                        href="#"
+                        onClick={(e) => { e.preventDefault(); paginate(num); }}
+                        className={currentPage === num ? "active" : ""}
+                        title={`Página ${num}`}
+                      >
+                        {num}
+                      </a>
+                    ))}
+                    
+                    {currentPage < totalPages && (
+                      <a 
+                        href="#" 
+                        className="arrow"
+                        onClick={(e) => { e.preventDefault(); paginate(currentPage + 1); }}
+                        title="Próxima página"
+                      >
+                        <i className="fa fa-angle-right" />
+                      </a>
+                    )}
                   </div>
                 </div>
 
@@ -622,7 +650,6 @@ export default function Shop() {
           </div>
         </div>
       </section>
-      {/* Shop Section End */}
     </>
   );
 }
