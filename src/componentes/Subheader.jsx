@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useSearchParams } from "react-router-dom";
 import { useState } from "react";
 import '../assets/Css/subheader.css';
 import MegaMenu from './MegaMenu';
@@ -6,6 +6,8 @@ import MegaMenu from './MegaMenu';
 export default function Subheader() {
   const location = useLocation();
   const currentPath = location.pathname;
+  const [searchParams] = useSearchParams();
+  const currentTitle = searchParams.get("title");
   const [activeMenu, setActiveMenu] = useState(null);
 
   return (
@@ -22,34 +24,34 @@ export default function Subheader() {
                   <Link to="/">Inicio</Link>
                 </li>
                 <li 
-                  className={currentPath === "/shop" ? "active" : ""}
+                  className={currentPath === "/shop" && currentTitle === "Alianças" ? "active" : ""}
                   onMouseEnter={() => setActiveMenu('aliancas')}
                 >
-                  <Link to="/shop">
+                  <Link to={`/shop?title=Alianças`}>
                     Alianças <span className={`arrow ${activeMenu === 'aliancas' ? 'rotate' : ''}`}>▼</span>
                   </Link>
                 </li>
                 <li 
-                  className={currentPath === "/faq" ? "active" : ""}
+                  className={currentPath === "/shop" && currentTitle === "Anéis" ? "active" : ""}
                   onMouseEnter={() => setActiveMenu('aneis')}
                 >
-                  <Link to="/faq">
+                  <Link to={`/shop?title=Anéis`}>
                     Anéis <span className={`arrow ${activeMenu === 'aneis' ? 'rotate' : ''}`}>▼</span>
                   </Link>
                 </li>
                 <li 
-                  className={currentPath === "/about" ? "active" : ""}
+                  className={currentPath === "/shop" && currentTitle === "Brincos" ? "active" : ""}
                   onMouseEnter={() => setActiveMenu('brincos')}
                 >
-                  <Link to="/about">
+                  <Link to={`/shop?title=Brincos`}>
                     Brincos <span className={`arrow ${activeMenu === 'brincos' ? 'rotate' : ''}`}>▼</span>
                   </Link>
                 </li>
                 <li 
-                  className={currentPath === "/blog" ? "active" : ""}
+                  className={currentPath === "/shop" && currentTitle === "Pingentes" ? "active" : ""}
                   onMouseEnter={() => setActiveMenu('pingentes')}
                 >
-                  <Link to="/blog">
+                  <Link to={`/shop?title=Pingentes`}>
                     Pingentes <span className={`arrow ${activeMenu === 'pingentes' ? 'rotate' : ''}`}>▼</span>
                   </Link>
                 </li>
