@@ -11,6 +11,8 @@ export default function Header() {
   const handleProfileClick = () => {
     const authData = getAuthData();
 
+
+    
     if (!authData || !authData.token) {
       navigate("/login");
     } else {
@@ -38,6 +40,8 @@ export default function Header() {
       }
     }
 
+   
+
     loadProducts();
   }, [url]);
 
@@ -54,6 +58,8 @@ export default function Header() {
 
     setFilteredProducts(filtered.slice(0, 5));
   }, [query, products]);
+
+//console.log(authData)
 
   return (
     <header className="header">
@@ -290,6 +296,11 @@ export default function Header() {
                   <li className={currentPath === "/medida" ? "active" : ""}>
                     <Link to="/medida">Medida Virtual</Link>
                   </li>
+    {true && 
+                   <li className={currentPath === "/admin" ? "active" : ""}>
+                    <Link to="/admin/dashboard">laia</Link>
+                  </li>
+    }  
                 </ul>
               </nav>
             </div>
