@@ -9,6 +9,7 @@ export default function Vendas() {
   const [inputCode, setInputCode] = useState(false)
   const [code, setCode] = useState("");
   const [saleID, setSaleID] = useState("");  
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     async function carregarDados() {
@@ -33,13 +34,14 @@ export default function Vendas() {
 
             return {
               key: sale.id,
-              id: sale.product_id,
+              id: sale.id,
               name: produto?.name || "Produto não encontrado",
               price: produto?.price || 0,
               code:sale.code,
               user_cep:sale.user_cep,
               address:`${sale.state},${sale.city},${sale.neighboor},${sale.street}`,
-              complement: sale.complement
+              complement: sale.complement,
+              status: sale.status
             };
           });
 
@@ -53,29 +55,43 @@ export default function Vendas() {
     carregarDados();
   }, [url]);
 
-  console.log(produtos);
-  
-  const atualizarCodigo = async () => {
 
+  const atualizarStatus = async (valorNovo) => {
+
+    setIsLoading(true);
+
+    console.log("valor", saleID)
   const dados = {
     sale_id:saleID,
     authorization:authData.token, 
-    code:code 
+    status:valorNovo 
 
   }
-
     const resPutSale = await fetch(`${url}/sales/`,{
       method:"PUT",
       headers:{"Content-Type": "application/json"},
       body:JSON.stringify(dados),
     }
-      
+    );
+   setIsLoading(false);
+  }
 
 
+  const atualizarCodigo = async () => {
 
+    const dados = {
+    sale_id:saleID,
+    authorization:authData.token, 
+    code:code 
+
+  }
+    const resPutSale = await fetch(`${url}/sales/`,{
+      method:"PUT",
+      headers:{"Content-Type": "application/json"},
+      body:JSON.stringify(dados),
+    }
     );
 
-    console.log(dados);
   }
 
   return (
@@ -108,19 +124,22 @@ export default function Vendas() {
 >>>>>>> 637f50e (feat: criação de novas colunas e edição de codigo de rastreio)
         </div>
     }
-
+      
       <div style={{
         background: "#fff",
         borderRadius: "12px",
         padding: "20px",
         boxShadow: "0 2px 10px rgba(0,0,0,0.08)",
       }}>
+
+
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr style={{ background: "#F9F5EE" }}>
               <th style={thStyle}>ID</th>
               <th style={thStyle}>Produto</th>
               <th style={thStyle}>Preço</th>
+              <th style={thStyle}>Status da venda</th>
               <th style={thStyle}> Código de rastreio </th> 
               <th style={thStyle}>CEP cliente</th>
               <th style={thStyle}>Endereço</th>
@@ -138,11 +157,26 @@ export default function Vendas() {
                   currency: "BRL",
                 })}
               </td>
+              <td style={tdStyle}>
+              {isLoading ? 
+                <div className="spinner-border text-warning" role="status" style={{ width: '1rem', height: '1rem', borderLeft:"1px"}}>
+                   <span className="sr-only">Carregando...</span>
+                 </div>
+              :
+              <select onChange={(e) => {atualizarStatus(e.target.value); setSaleID(produto.key) }}>
+             
+              <option> {produto.status}</option>
+              <option>aguardando pagamento </option>
+              <option>pagamento aprovado</option>
+              <option>em produção</option>
+              <option>a caminho</option>
+              <option>entregue</option>
+
+              </select> 
+              }
+                </td>
                 <td style={tdStyle} onClick={() => {setInputCode(true); setCode(produto.code); setSaleID(produto.key)}}>
-
               {inputCode || produto.code.length > 0 ?  produto.code : <button > add codigo </button>  }  
-
-
               </td>
                 <td style={tdStyle}>{produto.user_cep}</td>
                 <td style={tdStyle}>{produto.address}</td>
