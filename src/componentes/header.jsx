@@ -12,6 +12,8 @@ export default function Header() {
   const handleProfileClick = () => {
     const authData = getAuthData();
 
+
+    
     if (!authData || !authData.token) {
       navigate("/login");
     } else {
@@ -39,6 +41,8 @@ export default function Header() {
         console.log("Erro ao carregar produtos", err);
       }
     }
+
+   
 
     loadProducts();
   }, [url]);
@@ -89,6 +93,8 @@ export default function Header() {
       document.removeEventListener("click", handleClickOutside, true);
     };
   }, [openProfile]);
+
+//console.log(authData)
 
   return (
     <header className="header">
@@ -385,6 +391,11 @@ export default function Header() {
                   <li className={currentPath === "/medida" ? "active" : ""}>
                     <Link to="/medida">Medida Virtual</Link>
                   </li>
+    {true && 
+                   <li className={currentPath === "/admin" ? "active" : ""}>
+                    <Link to="/admin/dashboard">laia</Link>
+                  </li>
+    }  
                 </ul>
               </nav>
             </div>

@@ -6,6 +6,9 @@ export default function Vendas() {
   const [produtos, setProdutos] = useState([]);
   const url = import.meta.env.VITE_API_URL;
   const authData = getAuthData();
+  const [inputCode, setInputCode] = useState(false)
+  const [code, setCode] = useState("");
+  const [saleID, setSaleID] = useState("");  
 
   useEffect(() => {
     async function carregarDados() {
@@ -29,11 +32,14 @@ export default function Vendas() {
             const produto = productsMap.get(String(sale.product_id));
 
             return {
-              key: sale.id || `${sale.product_id}-${index}`,
+              key: sale.id,
               id: sale.product_id,
               name: produto?.name || "Produto não encontrado",
               price: produto?.price || 0,
-              sales: sale.sales ?? 0,
+              code:sale.code,
+              user_cep:sale.user_cep,
+              address:`${sale.state},${sale.city},${sale.neighboor},${sale.street}`,
+              complement: sale.complement
             };
           });
 
@@ -47,11 +53,50 @@ export default function Vendas() {
     carregarDados();
   }, [url]);
 
+  console.log(produtos);
+  
+  const atualizarCodigo = async () => {
+
+  const dados = {
+    sale_id:saleID,
+    authorization:authData.token, 
+    code:code 
+
+  }
+
+    const resPutSale = await fetch(`${url}/sales/`,{
+      method:"PUT",
+      headers:{"Content-Type": "application/json"},
+      body:JSON.stringify(dados),
+    }
+      
+
+
+
+    );
+
+    console.log(dados);
+  }
+
   return (
     <div style={{ padding: "20px" }}>
       <h2 style={{ fontSize: "26px", color: "#C9A86A" }}>
         Gerenciar Vendas
       </h2>
+
+    {inputCode &&
+        <div  style={{
+        background: "#fff",
+        borderRadius: "12px",
+        padding: "20px",
+        boxShadow: "0 2px 10px rgba(0,0,0,0.08)",
+      }}>
+    <h3>Atualizar código de rastreio ${saleID}</h3>
+          <input type="text" value={code} onChange={(e) => setCode(e.target.value)} ></input>
+              <button onClick={(e) => atualizarCodigo()}> confirmar </button>
+              <button onClick={(e) => setInputCode(false) }> cancelar </button>
+        </div>
+    }
 
       <div style={{
         background: "#fff",
@@ -65,25 +110,37 @@ export default function Vendas() {
               <th style={thStyle}>ID</th>
               <th style={thStyle}>Produto</th>
               <th style={thStyle}>Preço</th>
-              <th style={thStyle}>Vendas</th>
-            </tr>
+              <th style={thStyle}> Código de rastreio </th> 
+              <th style={thStyle}>CEP cliente</th>
+              <th style={thStyle}>Endereço</th>
+              <th style={thStyle}>Complemento do endereço</th>
+          </tr>
           </thead>
           <tbody>
             {produtos.map((produto) => (
               <tr key={produto.key}>
                 <td style={tdStyle}>{produto.id}</td>
                 <td style={tdStyle}>{produto.name}</td>
-                <td style={tdStyle}>
-                  {Number(produto.price).toLocaleString("pt-BR", {
-                    style: "currency",
-                    currency: "BRL",
-                  })}
-                </td>
-                <td style={tdStyle}>{produto.sales}</td>
+              <td style={tdStyle}>
+                {Number(produto.price).toLocaleString("pt-BR", {
+                  style: "currency",
+                  currency: "BRL",
+                })}
+              </td>
+                <td style={tdStyle} onClick={() => {setInputCode(true); setCode(produto.code); setSaleID(produto.key)}}>
+
+              {inputCode || produto.code.length > 0 ?  produto.code : <button > add codigo </button>  }  
+
+
+              </td>
+                <td style={tdStyle}>{produto.user_cep}</td>
+                <td style={tdStyle}>{produto.address}</td>
+                <td style={tdStyle}>{produto.complement}</td>
               </tr>
             ))}
           </tbody>
         </table>
+
       </div>
     </div>
   );
