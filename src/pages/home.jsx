@@ -352,13 +352,13 @@ export default function MaleFashion() {
       </section>
       {/* Banner Section End */}
 
-      {/* ================= MAIS VENDIDOS ================= */}
+      {/* ================= MAIS Amados ================= */}
       <section className="product spad">
         <div className="container">
           <div className="row">
             <div className="col-lg-12">
               <ul className="filter__controls">
-                <li className="active">Mais vendidos</li>
+                <li className="active">Os modelos mais amados</li>
               </ul>
             </div>
           </div>
