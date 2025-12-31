@@ -26,6 +26,7 @@ import Carrinho from "./pages/carrinho";
 import Layout2 from "./pages/painel2";
 import DadosPessoais from "./pages/dados";
 import MeusPedidos from "./pages/rastreio";
+import SocialButtons from "./componentes/socialbutton";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
@@ -38,8 +39,8 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         <Route path="/" element={<Home />} />
         <Route path="/medida" element={<MedidaNovo />} />
         <Route path="/shopcart" element={<ShoppingCart />} />
-        <Route path="/login" element={<Login/>} />
-        <Route path="/cadastro" element={<Signup/>} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/cadastro" element={<Signup />} />
         <Route path="/shop" element={<Shop />} />
         <Route path="/shopdetails/:id" element={<ShopDetails />} />
         <Route path="/checkout" element={<Checkout />} />
@@ -50,18 +51,20 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           <Route path="rastreio" element={<MeusPedidos />} />
         </Route>
         <Route path="/admin" element={<Layout />}>
-        <Route path="/admin/dashboard" element={<Dashboard/>}></Route>
-        <Route path="/admin/usuarios" element={<Usuarios/>}></Route>
-        <Route path="/admin/produto" element={<Produtos/>}></Route>
-        <Route path="/admin/produtoforms" element={<CreateProductPage/>}></Route>
-        <Route path="/admin/vendas" element={<Vendas/>}></Route>
-        <Route path="/admin/carrinho" element={<Carrinho/>}></Route>
-        <Route path="/admin/produtos/editar/:id" element={<EditProductPage/>}></Route>
+          <Route path="/admin/dashboard" element={<Dashboard />} />
+          <Route path="/admin/usuarios" element={<Usuarios />} />
+          <Route path="/admin/produto" element={<Produtos />} />
+          <Route path="/admin/produtoforms" element={<CreateProductPage />} />
+          <Route path="/admin/vendas" element={<Vendas />} />
+          <Route path="/admin/carrinho" element={<Carrinho />} />
+          <Route path="/admin/produtos/editar/:id" element={<EditProductPage />} />
         </Route>
       </Routes>
 
-      <Footer />
 
+      <SocialButtons />
+
+      <Footer />
     </BrowserRouter>
   </React.StrictMode>
 );
