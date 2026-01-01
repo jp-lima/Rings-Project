@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Adheader from "./componentes/adheader";
+import Adheader from "./componentes/Adheader";
 import Subheader from "./componentes/Subheader";
 import Header from "../src/componentes/header";
 import Footer from "./componentes/footer";

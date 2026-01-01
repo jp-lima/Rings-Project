@@ -20,7 +20,11 @@ export default function ShopDetails() {
     });
   }, []);
   const [product, setProduct] = useState({});
-  const [selectedSize, setSelectedSize] = useState(null);
+  const [selectedMascleSize, setSelectedMascleSize] = useState(null);
+  const [selectedFemaleSize, setSelectedFemaleSize] = useState(null);
+  
+  const [selectedAmount, setSelectedAmount] = useState(1);
+  
   const [produtos, setProdutos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [gravacaoMasculino, setGravacaoMasculino] = useState('');
@@ -87,16 +91,42 @@ export default function ShopDetails() {
   }, [id, url]);
   const navigate = useNavigate();
   const imageUrl = `${url}/products/${id}/image`;
- const handleBuy = () => {
+ const handleBuy = async () => {
+   
    {
-    const authData = getAuthData();
-    console.log("AuthData:", authData);
+     const authData = getAuthData();
+
     if (!authData || !authData?.token ) {
-      alert("Você precisa estar logado para comprar.");
-      navigate("/login");
-      return;
+    alert("Você precisa estar logado para comprar.");
+    navigate("/login");
+    return;
     }
 
+     const responseNewSale = await fetch(`${url}/sales`, {
+      method:"POST",
+      headers:{"Content-Type": "application/json"},
+      body: JSON.stringify({
+          value: product.price * selectedAmount,
+          product_id: product.id,
+          amount: selectedAmount,
+  user_cep: "",
+  authorization: authData.token,
+  sizes: `fem:${selectedFemaleSize},masc:${selectedMascleSize}/fem:${gravacaoFeminino},masc:${gravacaoMasculino}`,
+  status: "aguardando pagamento",
+  code: "",
+  state: "",
+  city: "",
+  neighboor: "",
+  street: "",
+  complement: ""
+
+      })
+
+
+    });
+     console.log(responseNewSale);
+
+     if(responseNewSale.status == 200){
      const checkoutUrl = product.checkout_link || id;
 
   if (!checkoutUrl) {
@@ -105,6 +135,7 @@ export default function ShopDetails() {
   }
 
   window.location.href = checkoutUrl;
+}
 };
 };
   // Mostrar loading enquanto carrega
@@ -225,13 +256,13 @@ export default function ShopDetails() {
                       </span>
                       <Select
                         options={sizeOptions}
-                        value={selectedSize}
-                        onChange={setSelectedSize}
+                        value={selectedMascleSize}
+                        onChange={setSelectedMascleSize}
                         styles={customStyles}
                         placeholder="Escolha o tamanho..."
                         isSearchable={false}
                       />
-                      {selectedSize && (
+                      {selectedMascleSize && (
                         <p style={{ marginTop: '10px', fontSize: '13px', color: '#666' }}>
                           <i className="fa fa-info-circle" style={{ marginRight: '5px' }}></i>
                           Não sabe seu tamanho? <a href="/medida" style={{ color: '#d4a574', fontWeight: '600' }}>Meça aqui!</a>
@@ -271,13 +302,13 @@ export default function ShopDetails() {
                       </span>
                       <Select
                         options={sizeOptions}
-                        value={selectedSize}
-                        onChange={setSelectedSize}
+                        value={selectedFemaleSize}
+                        onChange={setSelectedFemaleSize}
                         styles={customStyles}
                         placeholder="Escolha o tamanho..."
                         isSearchable={false}
                       />
-                      {selectedSize && (
+                      {selectedFemaleSize && (
                         <p style={{ marginTop: '10px', fontSize: '13px', color: '#666' }}>
                           <i className="fa fa-info-circle" style={{ marginRight: '5px' }}></i>
                           Não sabe seu tamanho? <a href="/medida" style={{ color: '#d4a574', fontWeight: '600' }}>Meça aqui!</a>
@@ -314,7 +345,7 @@ export default function ShopDetails() {
                   <div className="product__details__cart__option">
                     <div className="quantity">
                       <div className="pro-qty">
-                        <input type="text" defaultValue={1} />
+                        <input type="text" defaultValue={1} onChange={(e) => setSelectedAmount(e.target.value)} />
                       </div>
                     </div>
                     <button
