@@ -96,6 +96,7 @@ export default function ShopDetails() {
    {
      const authData = getAuthData();
 
+
     if (!authData || !authData?.token ) {
     alert("Você precisa estar logado para comprar.");
     navigate("/login");
@@ -111,7 +112,7 @@ export default function ShopDetails() {
           amount: selectedAmount,
   user_cep: "",
   authorization: authData.token,
-  sizes: `fem:${selectedFemaleSize},masc:${selectedMascleSize}/fem:${gravacaoFeminino},masc:${gravacaoMasculino}`,
+  sizes: `fem:${selectedFemaleSize.value},masc:${selectedMascleSize.value}/fem:${gravacaoFeminino},masc:${gravacaoMasculino}`,
   status: "aguardando pagamento",
   code: "",
   state: "",
