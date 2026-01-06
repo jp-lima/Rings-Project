@@ -89,6 +89,7 @@ export default function Vendas() {
         background: "#fff",
         borderRadius: "12px",
         padding: "20px",
+<<<<<<< HEAD
             boxShadow: "0 2px 10px rgba(0,0,0,0.08)",
 
       }}>
@@ -97,6 +98,14 @@ export default function Vendas() {
 
               <button onClick={(e) => atualizarCodigo()} className="login-button" style={{borderRadius:"20px",padding:"5px"}}> confirmar </button>
               <button onClick={(e) => setInputCode(false) }className="login-button" style={{borderRadius:"20px",padding:"5px", background:"red"}}> cancelar </button>
+=======
+        boxShadow: "0 2px 10px rgba(0,0,0,0.08)",
+      }}>
+    <h3>Atualizar código de rastreio ${saleID}</h3>
+          <input type="text" value={code} onChange={(e) => setCode(e.target.value)} ></input>
+              <button onClick={(e) => atualizarCodigo()}> confirmar </button>
+              <button onClick={(e) => setInputCode(false) }> cancelar </button>
+>>>>>>> 637f50e (feat: criação de novas colunas e edição de codigo de rastreio)
         </div>
     }
 
