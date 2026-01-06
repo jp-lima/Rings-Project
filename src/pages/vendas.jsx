@@ -1,15 +1,23 @@
 import { useEffect, useState } from "react";
-import { getAuthData } from "../utils/dadosuser";
+import { Link } from "react-router-dom";
 
+import { getAuthData } from "../utils/dadosuser";
 export default function Vendas() {
   const [produtos, setProdutos] = useState([]);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 767);
   const url = import.meta.env.VITE_API_URL;
   const authData = getAuthData();
-
-  const [inputCode, setInputCode] = useState(false);
+  const [inputCode, setInputCode] = useState(false)
   const [code, setCode] = useState("");
-  const [saleID, setSaleID] = useState("");
+  const [saleID, setSaleID] = useState("");  
+  const [isLoading, setIsLoading] = useState(false);
+const statusColors = {
+  "aguardando pagamento": "#FACC15",
+  "pagamento confirmado": "#86EFAC",
+  "em produção": "#BFDBFE",
+  "a caminho": "#C4B5FD",
+  "entregue": "#22C55E",
+};
 
   /* RESPONSIVO */
   useEffect(() => {
@@ -19,11 +27,23 @@ export default function Vendas() {
     return () => media.removeEventListener("change", handler);
   }, []);
 
+const btnEdit = {
+  background: "#C9A86A",
+  color: "#fff",
+  border: "none",
+  padding: "6px 12px",
+  marginRight: "10px",
+  borderRadius: "6px",
+  cursor: "pointer",
+};
+
+
   useEffect(() => {
     async function carregarDados() {
       try {
         const resSales = await fetch(`${url}/sales/`);
         const resProducts = await fetch(`${url}/products`);
+
 
         const salesRaw = await resSales.json();
         const productsRaw = await resProducts.json();
@@ -41,13 +61,17 @@ export default function Vendas() {
             const produto = productsMap.get(String(sale.product_id));
             return {
               key: sale.id,
-              id: sale.product_id,
+              id: sale.id,
+              sizes: sale.sizes.split("/")[0],
+              gravacoes: sale.sizes.split("/")[1],
               name: produto?.name || "Produto não encontrado",
-              price: produto?.price || 0,
-              code: sale.code,
-              user_cep: sale.user_cep,
-              address: `${sale.state}, ${sale.city}, ${sale.neighboor}, ${sale.street}`,
+              price: sale.value || 0,
+              amount: sale.amount, 
+              code:sale.code,
+              user_cep:sale.user_cep,
+              address:`${sale.state},${sale.city},${sale.neighboor},${sale.street}`,
               complement: sale.complement,
+              status: sale.status
             };
           });
 
@@ -60,19 +84,12 @@ export default function Vendas() {
     carregarDados();
   }, [url]);
 
-  const atualizarCodigo = async () => {
-    await fetch(`${url}/sales/`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        sale_id: saleID,
-        authorization: authData.token,
-        code,
-      }),
-    });
+  
 
-    setInputCode(false);
-  };
+
+
+
+
 
   return (
     <div style={{ padding: isMobile ? "10px" : "20px" }}>
@@ -80,100 +97,64 @@ export default function Vendas() {
         Gerenciar Vendas
       </h2>
 
-      {/* EDITAR CÓDIGO */}
-      {inputCode && (
-        <div style={box}>
-          <h3>Atualizar código de rastreio #{saleID}</h3>
-          <input
-            value={code}
-            onChange={e => setCode(e.target.value)}
-            style={{ padding: "8px", marginBottom: "10px", width: "100%" }}
-          />
-          <div style={{ display: "flex", gap: "10px" }}>
-            <button style={btnEdit} onClick={atualizarCodigo}>
-              Confirmar
-            </button>
-            <button style={btnDel} onClick={() => setInputCode(false)}>
-              Cancelar
-            </button>
-          </div>
-        </div>
-      )}
+      <div style={{
+        background: "#fff",
+        borderRadius: "12px",
+        padding: "20px",
+        boxShadow: "0 2px 10px rgba(0,0,0,0.08)",
+      }}>
 
-      {/* LISTAGEM */}
-      {!isMobile ? (
-        /* ===== DESKTOP ===== */
-        <div style={box}>
-          <table style={{ width: "100%", borderCollapse: "collapse" }}>
-            <thead>
-              <tr style={{ background: "#F9F5EE" }}>
-                <th style={th}>ID</th>
-                <th style={th}>Produto</th>
-                <th style={th}>Preço</th>
-                <th style={th}>Código</th>
-                <th style={th}>CEP</th>
-                <th style={th}>Endereço</th>
-                <th style={th}>Complemento</th>
+
+        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+          <thead>
+            <tr style={{ background: "#F9F5EE" }}>
+              <th style={thStyle}>Produto</th>
+              <th style={thStyle}>Preço</th>
+              <th style={thStyle}>medidas</th>
+              <th style={thStyle}>Gravações</th>
+              <th style={thStyle}>Status da venda</th>
+              <th style={thStyle}> Código de rastreio </th> 
+              <th style={thStyle}>CEP cliente</th>
+              <th style={thStyle}>Endereço</th>
+              <th style={thStyle}>Complemento do endereço</th>
+              <th style={thStyle}>Ações</th>
+          </tr>
+          </thead>
+          <tbody>
+            {produtos.map((produto) => (
+              <tr key={produto.key}>
+                <td style={tdStyle}>{produto.name}</td>
+              <td style={tdStyle}>
+                {Number(produto.price).toLocaleString("pt-BR", {
+                  style: "currency",
+                  currency: "BRL",
+                })}
+              </td>
+              <td>{produto.sizes}</td>
+              <td>{produto.gravacoes}</td>
+              <td style={tdStyle}> <div  style={{
+    backgroundColor: statusColors[produto.status] || "#E5E7EB",
+    padding: "6px 10px",
+    borderRadius: "6px",
+    fontWeight: "500",
+    textAlign: "center",
+  }}className={"status_venda"}>  {produto.status} </div></td>
+                <td style={tdStyle} onClick={() => {setInputCode(true); setCode(produto.code); setSaleID(produto.key)}}>
+              {produto.code }  
+              </td>
+                <td style={tdStyle}>{produto.user_cep}</td>
+                <td style={tdStyle}>{produto.address}</td>
+                <td style={tdStyle}>{produto.complement}</td>
+              <td style={tdStyle}>
+                  <Link to={`/admin/vendas/editar/${produto.id}`}>
+                    <button  style={btnEdit} >Editar </button>
+                  </Link>
+              </td>
               </tr>
-            </thead>
-            <tbody>
-              {produtos.map(p => (
-                <tr key={p.key}>
-                  <td style={td}>{p.id}</td>
-                  <td style={td}>{p.name}</td>
-                  <td style={td}>
-                    {Number(p.price).toLocaleString("pt-BR", {
-                      style: "currency",
-                      currency: "BRL",
-                    })}
-                  </td>
-                  <td
-                    style={{ ...td, cursor: "pointer", color: "#C9A86A" }}
-                    onClick={() => {
-                      setInputCode(true);
-                      setCode(p.code);
-                      setSaleID(p.key);
-                    }}
-                  >
-                    {p.code || "Adicionar"}
-                  </td>
-                  <td style={td}>{p.user_cep}</td>
-                  <td style={td}>{p.address}</td>
-                  <td style={td}>{p.complement}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ) : (
-        /* ===== MOBILE ===== */
-        produtos.map(p => (
-          <div key={p.key} style={card}>
-            <strong>{p.name}</strong>
-            <span>ID: {p.id}</span>
-            <span>
-              {Number(p.price).toLocaleString("pt-BR", {
-                style: "currency",
-                currency: "BRL",
-              })}
-            </span>
-            <span>CEP: {p.user_cep}</span>
-            <span>{p.address}</span>
-            {p.complement && <span>{p.complement}</span>}
-
-            <button
-              style={btnEdit}
-              onClick={() => {
-                setInputCode(true);
-                setCode(p.code);
-                setSaleID(p.key);
-              }}
-            >
-              {p.code ? "Editar código" : "Adicionar código"}
-            </button>
-          </div>
-        ))
-      )}
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

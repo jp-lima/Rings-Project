@@ -23,11 +23,6 @@ import MedidaNovo from "./pages/MedidaNovo";
 import Vendas from "./pages/vendas";
 import EditProductPage from "./pages/editar";
 import Carrinho from "./pages/carrinho";
-import Layout2 from "./pages/painel2";
-import DadosPessoais from "./pages/dados";
-import MeusPedidos from "./pages/rastreio";
-import SocialButtons from "./componentes/socialbutton";
-
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <BrowserRouter>
@@ -51,13 +46,13 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           <Route path="rastreio" element={<MeusPedidos />} />
         </Route>
         <Route path="/admin" element={<Layout />}>
-          <Route path="/admin/dashboard" element={<Dashboard />} />
-          <Route path="/admin/usuarios" element={<Usuarios />} />
-          <Route path="/admin/produto" element={<Produtos />} />
-          <Route path="/admin/produtoforms" element={<CreateProductPage />} />
-          <Route path="/admin/vendas" element={<Vendas />} />
-          <Route path="/admin/carrinho" element={<Carrinho />} />
-          <Route path="/admin/produtos/editar/:id" element={<EditProductPage />} />
+        <Route path="/admin/dashboard" element={<Dashboard/>}></Route>
+        <Route path="/admin/usuarios" element={<Usuarios/>}></Route>
+        <Route path="/admin/produto" element={<Produtos/>}></Route>
+        <Route path="/admin/produtoforms" element={<CreateProductPage/>}></Route>
+        <Route path="/admin/vendas" element={<Vendas/>}></Route>
+        <Route path="/admin/carrinho" element={<Carrinho/>}></Route>
+        <Route path="/admin/produtos/editar/:id" element={<EditProductPage/>}></Route>
         </Route>
       </Routes>
 
