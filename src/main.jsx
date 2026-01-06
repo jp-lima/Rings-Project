@@ -7,6 +7,7 @@ import Header from "../src/componentes/header";
 import Footer from "./componentes/footer";
 import Home from "../src/pages/home";
 import ShoppingCart from "../src/pages/ShoppingCart";
+import Layout2 from "./pages/painel";
 import Shop from "../src/pages/Shop";
 import ShopDetails from "./pages/ShopDetails";
 import Checkout from "./pages/Checkout";
@@ -23,6 +24,11 @@ import MedidaNovo from "./pages/MedidaNovo";
 import Vendas from "./pages/vendas";
 import EditProductPage from "./pages/editar";
 import Carrinho from "./pages/carrinho";
+import DadosPessoais from "./pages/dados";
+import MeusPedidos from "./pages/rastreio";
+import SocialButtons from "./componentes/socialbutton";
+
+
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <BrowserRouter>

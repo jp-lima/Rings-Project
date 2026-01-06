@@ -108,23 +108,23 @@ const btnEdit = {
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr style={{ background: "#F9F5EE" }}>
-              <th style={thStyle}>Produto</th>
-              <th style={thStyle}>Preço</th>
-              <th style={thStyle}>medidas</th>
-              <th style={thStyle}>Gravações</th>
-              <th style={thStyle}>Status da venda</th>
-              <th style={thStyle}> Código de rastreio </th> 
-              <th style={thStyle}>CEP cliente</th>
-              <th style={thStyle}>Endereço</th>
-              <th style={thStyle}>Complemento do endereço</th>
-              <th style={thStyle}>Ações</th>
+              <th>Produto</th>
+              <th>Preço</th>
+              <th>medidas</th>
+              <th>Gravações</th>
+              <th>Status da venda</th>
+              <th> Código de rastreio </th> 
+              <th>CEP cliente</th>
+              <th>Endereço</th>
+              <th>Complemento do endereço</th>
+              <th>Ações</th>
           </tr>
           </thead>
           <tbody>
             {produtos.map((produto) => (
               <tr key={produto.key}>
-                <td style={tdStyle}>{produto.name}</td>
-              <td style={tdStyle}>
+                <td>{produto.name}</td>
+              <td>
                 {Number(produto.price).toLocaleString("pt-BR", {
                   style: "currency",
                   currency: "BRL",
@@ -132,20 +132,20 @@ const btnEdit = {
               </td>
               <td>{produto.sizes}</td>
               <td>{produto.gravacoes}</td>
-              <td style={tdStyle}> <div  style={{
+              <td> <div  style={{
     backgroundColor: statusColors[produto.status] || "#E5E7EB",
     padding: "6px 10px",
     borderRadius: "6px",
     fontWeight: "500",
     textAlign: "center",
   }}className={"status_venda"}>  {produto.status} </div></td>
-                <td style={tdStyle} onClick={() => {setInputCode(true); setCode(produto.code); setSaleID(produto.key)}}>
+                <td onClick={() => {setInputCode(true); setCode(produto.code); setSaleID(produto.key)}}>
               {produto.code }  
               </td>
-                <td style={tdStyle}>{produto.user_cep}</td>
-                <td style={tdStyle}>{produto.address}</td>
-                <td style={tdStyle}>{produto.complement}</td>
-              <td style={tdStyle}>
+                <td>{produto.user_cep}</td>
+                <td>{produto.address}</td>
+                <td>{produto.complement}</td>
+              <td>
                   <Link to={`/admin/vendas/editar/${produto.id}`}>
                     <button  style={btnEdit} >Editar </button>
                   </Link>
