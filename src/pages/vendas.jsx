@@ -10,6 +10,14 @@ export default function Vendas() {
   const [code, setCode] = useState("");
   const [saleID, setSaleID] = useState("");  
   const [isLoading, setIsLoading] = useState(false);
+const statusColors = {
+  "aguardando pagamento": "#FACC15",
+  "pagamento confirmado": "#86EFAC",
+  "em produção": "#BFDBFE",
+  "a caminho": "#C4B5FD",
+  "entregue": "#22C55E",
+};
+
 
   useEffect(() => {
     async function carregarDados() {
@@ -162,7 +170,13 @@ export default function Vendas() {
               </td>
               <td>{produto.sizes}</td>
               <td>{produto.gravacoes}</td>
-              <td style={tdStyle}> {produto.status} </td>
+              <td style={tdStyle}> <div  style={{
+    backgroundColor: statusColors[produto.status] || "#E5E7EB",
+    padding: "6px 10px",
+    borderRadius: "6px",
+    fontWeight: "500",
+    textAlign: "center",
+  }}className={"status_venda"}>  {produto.status} </div></td>
                 <td style={tdStyle} onClick={() => {setInputCode(true); setCode(produto.code); setSaleID(produto.key)}}>
               {produto.code }  
               </td>
