@@ -16,7 +16,7 @@ export default function Footer() {
                         <div className="footer__about">
                             <div className="footer__logo">
                                 <a href="#">
-                                    <img src="/img/footer-logo.png" alt="" />
+                                    <img src="/img/1767797462566.png" alt="" />
                                 </a>
                             </div>
                             <p>
@@ -35,7 +35,7 @@ export default function Footer() {
                                     <a href="#">Nossa história</a>
                                 </li>
                                 <li>
-                                    <a href="#">Nosso contato</a>
+                                    <a href="/contact">Nosso contato</a>
                                 </li>
                             </ul>
                         </div>
@@ -48,7 +48,7 @@ export default function Footer() {
                                     <a href="#">Métodos de Pagamento</a>
                                 </li>
                                 <li>
-                                    <a href="#">Garantias</a>
+                                    <a href="/garantia">Garantias</a>
                                 </li>
                             </ul>
                         </div>
