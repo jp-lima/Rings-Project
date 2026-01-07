@@ -1,0 +1,109 @@
+/* ================================
+   POLÍTICA DE GARANTIA
+   Alianças Eternas
+================================ */
+
+.pg-garantia-wrapper {
+  max-width: 1000px;
+  margin: 3rem auto;
+  padding: 0 1.2rem;
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  color: #333333;
+}
+
+/* Blocos */
+.pg-garantia-bloco {
+  background-color: #fffdf7;
+  border: 1px solid #e6d8a8;
+  border-radius: 14px;
+  padding: 2rem;
+  margin-bottom: 2.2rem;
+  box-shadow: 0 6px 18px rgba(201, 164, 76, 0.12);
+}
+
+/* Títulos */
+.pg-garantia-titulo {
+  color: #c9a44c;
+  font-size: 1.45rem;
+  margin-bottom: 1.1rem;
+  font-weight: 600;
+  border-left: 4px solid #c9a44c;
+  padding-left: 0.8rem;
+}
+
+/* Texto */
+.pg-garantia-bloco p {
+  font-size: 1rem;
+  line-height: 1.75;
+  margin-bottom: 0.9rem;
+}
+
+/* Listas */
+.pg-garantia-lista,
+.pg-garantia-sublista {
+  padding-left: 1.4rem;
+  margin-bottom: 1rem;
+}
+
+.pg-garantia-lista li,
+.pg-garantia-sublista li {
+  margin-bottom: 0.55rem;
+  line-height: 1.6;
+}
+
+/* Sublista (nível interno) */
+.pg-garantia-sublista {
+  margin-top: 0.6rem;
+}
+
+/* Destaque / Aviso */
+.pg-garantia-aviso {
+  margin-top: 1.2rem;
+  padding: 1rem 1.2rem;
+  background-color: #f9f2dc;
+  border-left: 4px solid #c9a44c;
+  border-radius: 6px;
+  color: #8a6a24;
+  font-weight: 500;
+}
+
+/* Links (caso adicione futuramente) */
+.pg-garantia-wrapper a {
+  color: #c9a44c;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.pg-garantia-wrapper a:hover {
+  text-decoration: underline;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .pg-garantia-wrapper {
+    margin: 2rem auto;
+  }
+
+  .pg-garantia-bloco {
+    padding: 1.5rem;
+  }
+
+  .pg-garantia-titulo {
+    font-size: 1.25rem;
+  }
+
+  .pg-garantia-bloco p,
+  .pg-garantia-lista li {
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .pg-garantia-bloco {
+    padding: 1.2rem;
+  }
+
+  .pg-garantia-titulo {
+    font-size: 1.15rem;
+  }
+}

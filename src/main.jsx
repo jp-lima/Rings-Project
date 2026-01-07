@@ -27,7 +27,7 @@ import Carrinho from "./pages/carrinho";
 import DadosPessoais from "./pages/dados";
 import MeusPedidos from "./pages/rastreio";
 import SocialButtons from "./componentes/socialbutton";
-
+import PoliticaGarantiaMain from "./pages/garantia";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
@@ -47,6 +47,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/garantia" element={<PoliticaGarantiaMain />} />
         <Route path="/perfil" element={<Layout2 />}>
           <Route path="dados" element={<DadosPessoais />} />
           <Route path="rastreio" element={<MeusPedidos />} />
