@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
+import { getAuthData } from "../utils/dadosuser";
 
 export default function Carrinho() {
   const [produtos, setProdutos] = useState([]);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 767);
   const url = import.meta.env.VITE_API_URL;
-
+  const authData = getAuthData();
+  
   /* RESPONSIVO */
   useEffect(() => {
     const media = window.matchMedia("(max-width: 767px)");
@@ -19,9 +21,20 @@ export default function Carrinho() {
         const resSales = await fetch(`${url}/sales/`);
         const resProducts = await fetch(`${url}/products`);
 
+        const resUsers = await fetch(`${url}/users`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            authorization: authData?.token, // ou authData.token
+          }),
+        });
+
         const salesRaw = await resSales.json();
         const productsRaw = await resProducts.json();
-
+        const usersRaw = await resUsers.json();
+        
         const salesArray = Array.isArray(salesRaw)
           ? salesRaw
           : salesRaw.data || [];
@@ -30,16 +43,25 @@ export default function Carrinho() {
           ? productsRaw
           : productsRaw.data || [];
 
+        const usersArray = Array.isArray(usersRaw) ? usersRaw : usersRaw.data || [];
+        
         const productsMap = new Map(
           productsArray.map(p => [String(p.id), p])
+        );
+      // 🔹 Map de usuários
+        const usersMap = new Map(
+          usersArray.map(u => [String(u.id), u])
         );
 
         const carrinho = salesArray
           .filter(sale => sale.status === "cart")
           .map((sale, index) => {
             const produto = productsMap.get(String(sale.product_id));
+            const user = usersMap.get(String(sale.user_id));
+            
             return {
               key: sale.id || `${sale.product_id}-${index}`,
+              userName: user?.name || "Usuário não encontrado",
               id: sale.product_id,
               name: produto?.name || "Produto não encontrado",
               price: produto?.price || 0,
@@ -68,6 +90,7 @@ export default function Carrinho() {
             <thead>
               <tr style={{ background: "#F9F5EE" }}>
                 <th style={th}>ID</th>
+                <th style={th}>Cliente</th>
                 <th style={th}>Produto</th>
                 <th style={th}>Preço</th>
                 <th style={th}>Status</th>
@@ -77,6 +100,7 @@ export default function Carrinho() {
               {produtos.map(p => (
                 <tr key={p.key}>
                   <td style={td}>{p.id}</td>
+                  <td style={td}>{p.userName}</td>
                   <td style={td}>{p.name}</td>
                   <td style={td}>
                     {Number(p.price).toLocaleString("pt-BR", {
