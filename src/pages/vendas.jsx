@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-
+import "../assets/Css/table-sells.css";    
 import { getAuthData } from "../utils/dadosuser";
 export default function Vendas() {
   const [produtos, setProdutos] = useState([]);
@@ -11,6 +11,8 @@ export default function Vendas() {
   const [code, setCode] = useState("");
   const [saleID, setSaleID] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [filters, setFilters] = useState({client:"", product:"", price:"", status:""})
+  const [filteredSales, setFilteredSales] = useState([])
   const statusColors = {
     "aguardando pagamento": "#FACC15",
     "pagamento confirmado": "#86EFAC",
@@ -89,6 +91,7 @@ export default function Vendas() {
               amount: sale.amount,
               code: sale.code,
               user_cep: sale.user_cep,
+              data: sale.created_at,
               address: `${sale.state}, ${sale.city}, ${sale.neighboor}, ${sale.street}`,
               complement: sale.complement,
               status: sale.status,
@@ -96,27 +99,148 @@ export default function Vendas() {
           });
 
         setProdutos(completos);
+        setFilteredSales(completos);
       } catch (err) {
         console.error(err);
         setProdutos([]);
+        setFilteredSales([]);
       }
     }
 
     carregarDados();
-  }, [url, authData]);
+  }, []);
 
 
 
+function formatDate(dateString) {
+  const date = new Date(dateString);
+
+  return date.toLocaleString("pt-BR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+/*
+useEffect(() => {
+  
+  
+
+  console.log(filters)
+
+}, [filters])
+*/
 
 
+useEffect(() => {
+  let result = produtos;
 
+  // 🔍 Cliente
+  if (filters.client.trim() !== "") {
+    result = result.filter((sale) =>
+      sale.userName
+        .toLowerCase()
+        .includes(filters.client.toLowerCase())
+    );
+  }
+
+  // 📦 Produto
+  if (filters.product.trim() !== "") {
+    result = result.filter((sale) =>
+      sale.name
+        .toLowerCase()
+        .includes(filters.product.toLowerCase())
+    );
+  }
+
+  // 💰 Preço
+  if (filters.price !== "") {
+    result = result.filter(
+      (sale) => Number(sale.price) === Number(filters.price)
+    );
+  }
+
+  // 🚚 Status
+  if (filters.status !== "") {
+    result = result.filter(
+      (sale) => sale.status === filters.status
+    );
+  }
+
+  setFilteredSales(result);
+}, [filters, produtos]);
 
 
   return (
     <div style={{ padding: isMobile ? "10px" : "20px" }}>
+      
+  <div className="filters-container">
+      <h2 className="filters-title">Filtros de Vendas</h2>
+
+      <div className="filters-grid">
+        <input
+          type="text"
+          placeholder="Nome do cliente"
+          value={filters.client}
+          onChange={(e) =>
+            setFilters({ ...filters, client: e.target.value })
+          }
+        />
+
+        <input
+          type="text"
+          placeholder="Nome do produto"
+          value={filters.product}
+          onChange={(e) =>
+            setFilters({ ...filters, product: e.target.value })
+          }
+        />
+
+        <input
+          type="number"
+          placeholder="Preço da venda"
+          value={filters.price}
+          onChange={(e) =>
+            setFilters({ ...filters, price: e.target.value })
+          }
+        />
+
+        <select
+          value={filters.status}
+          onChange={(e) =>
+            setFilters({ ...filters, status: e.target.value })
+          }
+        >
+          <option value="">Status da venda</option>
+          <option value="aguardando pagamento">Aguardando pagamento</option>
+          <option value="pagamento confirmado">Pagamento confirmado</option>
+          <option value="em produção">Em produção</option>
+          <option value="a caminho">A caminho</option>
+          <option value="entregue">Entregue</option>
+        </select>
+      </div>
+
+      <button
+        className="clear-filters"
+        onClick={() =>
+          setFilters({
+            client: "",
+            product: "",
+            price: "",
+            status: "",
+          })
+        }
+      >
+        Limpar filtros
+      </button>
+    </div>
+      
       <h2 style={{ fontSize: isMobile ? "20px" : "26px", color: "#C9A86A" }}>
         Gerenciar Vendas
       </h2>
+      
 
       <div style={{
         background: "#fff",
@@ -139,11 +263,12 @@ export default function Vendas() {
               <th>CEP cliente</th>
               <th>Endereço</th>
               <th>Complemento do endereço</th>
+              <th>Pedido em</th>
               <th>Ações</th>
             </tr>
           </thead>
           <tbody>
-            {produtos.map((produto) => (
+            {filteredSales.map((produto) => (
               <tr key={produto.key}>
                 <td>{produto.userName}</td>
                 <td>{produto.name}</td>
@@ -168,6 +293,7 @@ export default function Vendas() {
                 <td>{produto.user_cep}</td>
                 <td>{produto.address}</td>
                 <td>{produto.complement}</td>
+                <td>{formatDate(produto.data)}</td>
                 <td>
                   <Link to={`/admin/vendas/editar/${produto.id}`}>
                     <button style={btnEdit} >Editar </button>
