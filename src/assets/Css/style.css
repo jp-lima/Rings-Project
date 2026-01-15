@@ -1117,7 +1117,7 @@ ol {
 }
 
 .hero__items {
-	height: 650px;
+	height: 780px;
 	width: 100%;
 	padding: 0 !important;
 	margin: 0 !important;
@@ -4404,7 +4404,7 @@ ol {
 	}
 
 	.hero__items {
-		height: 250px !important;
+		height: 200px !important;
 		padding: 0 !important;
 		margin: 0 !important;
 		background-size: 100% auto !important;
@@ -4413,6 +4413,27 @@ ol {
 		display: block !important;
 		line-height: 0 !important;
 	}
+
+
+   /* Imagens específicas para mobile */
+   .hero__items[style*="aliprata.png"] {
+       background-image: url('/img/aliprata-mobile.png') !important;
+   }
+  
+   .hero__items[style*="formatura.png"] {
+       background-image: url('/img/formatura-mobile.png') !important;
+   }
+  
+   .hero__items[style*="aneis.png"] {
+       background-image: url('/img/aneis-mobile.png') !important;
+   }
+   .hero__slider .swiper-button-next,
+   .hero__slider .swiper-button-prev,
+   .hero .swiper-button-next,
+   .hero .swiper-button-prev {
+       display: none !important;
+   }
+
 
 	/* Pontos de paginação DENTRO da foto no mobile */
 	.hero__slider .swiper-pagination,
