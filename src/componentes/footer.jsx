@@ -31,9 +31,7 @@ export default function Footer() {
                         <div className="footer__widget">
                             <h6>Sobre nós</h6>
                             <ul>
-                                <li>
-                                    <a href="#">Nossa história</a>
-                                </li>
+                                
                                 <li>
                                     <a href="/contact">Nosso contato</a>
                                 </li>

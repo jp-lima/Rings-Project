@@ -259,40 +259,50 @@ useEffect(() => {
             </tr>
           </thead>
           <tbody>
-            {filteredSales.map((produto) => (
-              <tr key={produto.key}>
-                <td>{produto.userName}</td>
-                <td>{produto.name}</td>
-                <td>
-                  {Number(produto.price).toLocaleString("pt-BR", {
-                    style: "currency",
-                    currency: "BRL",
-                  })}
-                </td>
-                <td>{produto.sizes}</td>
-                <td>{produto.gravacoes}</td>
-                <td> <div style={{
-                  backgroundColor: statusColors[produto.status] || "#E5E7EB",
-                  padding: "6px 10px",
-                  borderRadius: "6px",
-                  fontWeight: "500",
-                  textAlign: "center",
-                }} className={"status_venda"}>  {produto.status} </div></td>
-                <td onClick={() => { setInputCode(true); setCode(produto.code); setSaleID(produto.key) }}>
-                  {produto.code}
-                </td>
-                <td>{produto.user_cep}</td>
-                <td>{produto.address}</td>
-                <td>{produto.complement}</td>
-                <td>{formatDate(produto.data)}</td>
-                <td>
-                  <Link to={`/admin/vendas/editar/${produto.id}`}>
-                    <button style={btnEdit} >Editar </button>
-                  </Link>
-                </td>
-              </tr>
-            ))}
-          </tbody>
+  {filteredSales.map((produto) => (
+    <tr key={produto.key}>
+      <td data-label="Cliente">{produto.userName}</td>
+      <td data-label="Produto">{produto.name}</td>
+      <td data-label="Preço">
+        {Number(produto.price).toLocaleString("pt-BR", {
+          style: "currency",
+          currency: "BRL",
+        })}
+      </td>
+      <td data-label="Medidas">{produto.sizes}</td>
+      <td data-label="Gravações">{produto.gravacoes}</td>
+
+      <td data-label="Status">
+        <div
+          className="status_venda"
+          style={{
+            backgroundColor: statusColors[produto.status] || "#E5E7EB",
+            padding: "6px 10px",
+            borderRadius: "6px",
+            textAlign: "center",
+          }}
+        >
+          {produto.status}
+        </div>
+      </td>
+
+      <td data-label="Código">
+        {produto.code}
+      </td>
+
+      <td data-label="CEP">{produto.user_cep}</td>
+      <td data-label="Endereço">{produto.address}</td>
+      <td data-label="Complemento">{produto.complement}</td>
+      <td data-label="Pedido em">{formatDate(produto.data)}</td>
+
+      <td data-label="Ações">
+        <Link to={`/admin/vendas/editar/${produto.id}`}>
+          <button style={btnEdit}>Editar</button>
+        </Link>
+      </td>
+    </tr>
+  ))}
+</tbody>
         </table>
       </div>
     </div>
