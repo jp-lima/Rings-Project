@@ -184,6 +184,7 @@ export default function Shop() {
       try {
         const res = await fetch(`${url}/products`);
         const data = await res.json();
+        console.log("PRODUTOS CARREGADOS:", data);
         setProducts(data);
         setDisplayProducts(data);
       } catch (err) {
