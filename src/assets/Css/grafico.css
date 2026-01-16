@@ -1,35 +1,70 @@
-
-button{
-transition:0.4s;
-padding:4.5px 10px;
-
+/* BASE (desktop por padrão) */
+button {
+  transition: 0.4s;
+  padding: 6px 14px;
+  font-size: 14px;
+  cursor: pointer;
 }
 
-.btn-actived{
-background-color:#C9A86A;
-border-radius:10px;
-color:white;
-border:none;
-
+/* Botão ativo */
+.btn-actived {
+  background-color: #C9A86A;
+  border-radius: 10px;
+  color: white;
+  border: none;
 }
 
-.btn{
-background-color:#edede4;
-border-radius:10px;
-color:#C9A86A;
-border:none;
-
-
+/* Botão padrão */
+.btn {
+  background-color: #edede4;
+  border-radius: 10px;
+  color: #C9A86A;
+  border: none;
 }
 
-
-
-.container-btns-grafico-config{
-display:flex;
-flex-direction:column;
-gap:50px;
-
-
+/* Container dos botões */
+.container-btns-grafico-config {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
 }
 
+/* ========================= */
+/* 📱 MOBILE */
+@media (max-width: 480px) {
+  button {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+  }
 
+  .container-btns-grafico-config {
+    gap: 16px;
+  }
+}
+
+/* ========================= */
+/* 📲 TABLET */
+@media (min-width: 481px) and (max-width: 1024px) {
+  button {
+    padding: 10px 16px;
+    font-size: 15px;
+  }
+
+  .container-btns-grafico-config {
+    gap: 24px;
+  }
+}
+
+/* ========================= */
+/* 💻 DESKTOP GRANDE */
+@media (min-width: 1440px) {
+  button {
+    padding: 8px 18px;
+    font-size: 15px;
+  }
+
+  .container-btns-grafico-config {
+    gap: 50px;
+  }
+}
