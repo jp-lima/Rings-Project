@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import '../assets/Css/megamenu.css';
+import { FILTER_CONFIG } from '../utils/filters';
 
 export default function MegaMenu({ category, isOpen }) {
   const menuContent = {
@@ -7,47 +8,31 @@ export default function MegaMenu({ category, isOpen }) {
       sections: [
         {
           title: "Alianças",
-          items: [
-            "Moeda Antiga com Banho a Ouro 18k",
-            "Prata",
-            "Ouro 10k",
-          ]
+          items: FILTER_CONFIG["Alianças"]
         },
       ]
     },
     brincos: {
       sections: [
-        
         {
           title: "Brincos",
-          items: [
-           "Moeda Antiga com Banho a Ouro 18k"
-          ]
+          items: FILTER_CONFIG["Brincos"]
         },
       ]
     },
     pingentes: {
-
       sections: [
         {
           title: "Pingentes",
-          items: [
-             "Moeda Antiga com Banho a Ouro 18k"
-          ]
+          items: FILTER_CONFIG["Pingentes"]
         },
       ]
     },
     aneis: {
-
       sections: [
         {
           title: "Anéis",
-          items: [
-            "Formatura",
-            "Masculinos Moeda",
-            "Solitários e Aparadores Moeda",
-            "Prata",
-          ]
+          items: FILTER_CONFIG["Anéis"]
         },
       ]
     }

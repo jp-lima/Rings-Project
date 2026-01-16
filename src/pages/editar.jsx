@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "../assets/Css/formsproduto.css";
 import { getAuthData } from "../utils/dadosuser";
+import { FILTER_CONFIG } from "../utils/filters";
 
 export default function EditProductPage() {
   const { id } = useParams();
@@ -17,6 +18,7 @@ export default function EditProductPage() {
     material: "",
     checkout_link: "",
     status: "",
+    stone: 0,
   });
   const [loading, setLoading] = useState(true);
   const [images, setImages] = useState([]);
@@ -41,6 +43,7 @@ export default function EditProductPage() {
         material: product.material ?? "",
         checkout_link: product.checkout_link ?? "",
         status: product.status ?? "",
+        stone: product.stone ?? 0,
       });
 
       if (product.image) {
@@ -88,6 +91,7 @@ export default function EditProductPage() {
       formData.append("price", Number(form.price));
       formData.append("type", form.type);
       formData.append("material", form.material);
+      formData.append("stone", form.stone);
       formData.append("checkout_link", form.checkout_link);
       formData.append("status", form.status);
 
@@ -163,22 +167,50 @@ if (loading) {
         </select>
 
         {/* TIPO */}
-        <label className="label">Tipo</label>
-        <input
-          name="type"
+                <label className="label">Tipo</label>
+        <select
           className="input"
           value={form.type}
-          onChange={handleChange}
-        />
+          onChange={(e) =>
+            setForm({
+              ...form,
+              type: e.target.value,
+              material: "", // reseta material ao trocar o tipo
+            })
+          }
+        >
+          <option value="">Selecione um tipo</option>
+          {Object.keys(FILTER_CONFIG).map((type) => (
+            <option key={type} value={type}>
+              {type}
+            </option>
+          ))}
+        </select>
 
         {/* MATERIAL */}
-        <label className="label">Material</label>
-        <input
-          name="material"
+              <label className="label">Material</label>
+        <select
           className="input"
           value={form.material}
-          onChange={handleChange}
-        />
+          onChange={(e) =>
+            setForm({
+              ...form,
+              material: e.target.value,
+            })
+          }
+          disabled={!form.type}
+        >
+          <option value="">
+            {form.type ? "Selecione um material" : "Selecione um tipo primeiro"}
+          </option>
+        
+          {form.type &&
+            FILTER_CONFIG[form.type]?.map((material) => (
+              <option key={material} value={material}>
+                {material}
+              </option>
+            ))}
+        </select>
 
         {/* CHECKOUT */}
         <label className="label">Checkout Link</label>
@@ -188,6 +220,21 @@ if (loading) {
           value={form.checkout_link}
           onChange={handleChange}
         />
+        {/* PEDRA */}
+        <label className="label" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <input
+            type="checkbox"
+            checked={form.stone === 1}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                stone: e.target.checked ? 1 : 0,
+              })
+            }
+            style={{ width: 'auto', margin: 0 }}
+          />
+          Produto aceita pedras personalizadas
+        </label>
 
         {/* IMAGEM */}
         <label className="label">Imagem</label>

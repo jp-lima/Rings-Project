@@ -1,6 +1,8 @@
 import React, { useState, useRef } from "react";
 import "../assets/Css/formsproduto.css";
 import { getAuthData } from "../utils/dadosuser";
+import { FILTER_CONFIG } from "../utils/filters";
+
 
 export default function CreateProductPage() {
   const authData = getAuthData();
@@ -119,22 +121,51 @@ export default function CreateProductPage() {
 
         {/* TIPO */}
         <label className="label">Tipo</label>
-        <input
-          name="type"
-          className="input"
-          value={form.type}
-          onChange={handleChange}
-        />
+<select
+  className="input"
+  value={form.type}
+  onChange={(e) =>
+    setForm({
+      ...form,
+      type: e.target.value,
+      material: "", // reseta material ao trocar o tipo
+    })
+  }
+>
+  <option value="">Selecione um tipo</option>
+  {Object.keys(FILTER_CONFIG).map((type) => (
+    <option key={type} value={type}>
+      {type}
+    </option>
+  ))}
+</select>
         {errors.type && <p className="error-text">{errors.type}</p>}
 
         {/* MATERIAL */}
         <label className="label">Material</label>
-        <input
-          name="material"
-          className="input"
-          value={form.material}
-          onChange={handleChange}
-        />
+<select
+  className="input"
+  value={form.material}
+  onChange={(e) =>
+    setForm({
+      ...form,
+      material: e.target.value,
+    })
+  }
+  disabled={!form.type}
+>
+  <option value="">
+    {form.type ? "Selecione um material" : "Selecione um tipo primeiro"}
+  </option>
+
+  {form.type &&
+    FILTER_CONFIG[form.type]?.map((material) => (
+      <option key={material} value={material}>
+        {material}
+      </option>
+    ))}
+</select>
+
         {errors.material && <p className="error-text">{errors.material}</p>}
   
       
