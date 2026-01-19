@@ -9,6 +9,7 @@ export default function Header() {
   const authData = getAuthData();
   const isAdmin = authData?.role === "admin";
   const isLogged = !!authData?.token;
+
   const handleProfileClick = () => {
     const authData = getAuthData();
 
@@ -74,6 +75,22 @@ export default function Header() {
     textDecoration: "none",
     color: "#333"
   };
+
+
+
+  useEffect(() => {
+  const alreadyRan = sessionStorage.getItem("dashboard_effect_ran");
+
+  if (alreadyRan){console.log("alreadyRan True"); return};
+
+  sessionStorage.setItem("dashboard_effect_ran", "true");
+  console.log("alreadyRan False")
+
+  fetch(`${url}/analitycs/user-loged`, {method:'POST'})
+  .then(console.log("visita ao site confirmada"))
+  }, []);
+
+
 
 
   useEffect(() => {
