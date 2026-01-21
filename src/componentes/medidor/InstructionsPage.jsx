@@ -7,7 +7,7 @@ const InstructionsPage = ({ onStart }) => {
           <div className="col-lg-6 col-md-12 mb-4 mb-lg-0">
             <div style={{ paddingRight: "30px" }}>
               <h3 style={{ 
-                fontSize: "28px", 
+                fontSize: "clamp(22px, 5vw, 28px)", 
                 color: "#111", 
                 marginBottom: "15px",
                 fontWeight: "600",
@@ -28,7 +28,7 @@ const InstructionsPage = ({ onStart }) => {
                 </span>
                 Calibre a Tela
               </h3>
-              <p style={{ fontSize: "20px", color: "#666", lineHeight: "1.8" }}>
+              <p style={{ fontSize: "clamp(16px, 4vw, 20px)", color: "#666", lineHeight: "1.8" }}>
                 Você precisará de um <strong>cartão de crédito ou débito físico</strong> padrão. Vamos usar ele para calibrar a escala da tela, 
                 garantindo que as medidas sejam precisas. Basta ajustar até que o cartão virtual tenha exatamente o mesmo 
                 tamanho do cartão real.
@@ -38,11 +38,11 @@ const InstructionsPage = ({ onStart }) => {
           <div className="col-lg-6 col-md-12">
             <div style={{
               borderRadius: "15px",
-              padding: "40px",
+              padding: "clamp(20px, 5vw, 40px)",
               textAlign: "center"
             }}>
               <i className="fa fa-credit-card" style={{
-                fontSize: "80px",
+                fontSize: "clamp(50px, 10vw, 80px)",
                 color: "#d4af37",
                 marginBottom: "15px"
               }}></i>
@@ -57,14 +57,14 @@ const InstructionsPage = ({ onStart }) => {
             <div style={{
               background:  "linear-gradient(90deg, #ffffff 0%, #f7e9b3 10%, #d4af37 95%)",
               borderLeft: "4px solid #d4af37",
-              padding: "20px",
+              padding: "clamp(15px, 3vw, 20px)",
               borderRadius: "5px",
               marginTop: "30px"
             }}>
-              <h4 style={{ fontSize: "16px", color: "#111", marginBottom: "10px", fontWeight: "600" }}>
+              <h4 style={{ fontSize: "clamp(14px, 3vw, 16px)", color: "#111", marginBottom: "10px", fontWeight: "600" }}>
                   ⚠️ Avisos Importantes:
               </h4>
-              <ul style={{ marginBottom: 0, paddingLeft: "20px", color: "#666", fontSize: "18px" }}>
+              <ul style={{ marginBottom: 0, paddingLeft: "20px", color: "#666", fontSize: "clamp(14px, 3vw, 18px)" }}>
                 <li>Use um cartão de crédito padrão (não vale-alimentação ou outros formatos)</li>
                 <li>Mantenha a tela na vertical durante a medição</li>
                 <li>Certifique-se de que o brilho da tela está no máximo</li>
@@ -89,27 +89,43 @@ const InstructionsPage = ({ onStart }) => {
             <div style={{ textAlign: "center" }}>
               {/* Ícone de Anel */}
               <div style={{
-                width: "500px",
-                height: "500px",
-                margin: "0 auto 20px",
-                position: "left"
+                width: "100%",
+                maxWidth: "500px",
+                height: "auto",
+                margin: "0 auto 20px"
               }}>
-                <img src="/img/aliancas.png" alt="logo" />
-
+                <img 
+                  src="/img/aliancas.png" 
+                  alt="logo" 
+                  style={{ 
+                    width: "100%", 
+                    height: "auto",
+                    maxWidth: "500px"
+                  }} 
+                />
               </div>
-
-
             </div>
           </div>
 
           {/* Botões de Ação */}
-          <div className="col-lg-7 col-md-12" style={{ paddingLeft: "90px", paddingRight: "90px" }}>
-            <div style={{
+          <div className="col-lg-7 col-md-12" style={{ paddingLeft: "0", paddingRight: "0" }}>
+            <style>
+              {`
+                @media (min-width: 992px) {
+                  .button-container-custom {
+                    padding-left: 90px !important;
+                    padding-right: 90px !important;
+                  }
+                }
+              `}
+            </style>
+            <div className="button-container-custom" style={{
               display: "flex",
               flexDirection: "column",
               alignItems: "stretch",
               gap: "20px",
               width: "100%",
+              padding: "0 15px"
             }}>
 
               {/* Botão 1: Medir com anel na tela */}
