@@ -1640,6 +1640,16 @@ ol {
 	background-size: cover;
 	border-bottom: 1px solid #eee;
 	border-radius: 10px 10px 0 0;
+	overflow: hidden;
+}
+
+.product__item__pic img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	position: absolute;
+	top: 0;
+	left: 0;
 }
 
 .product__item__pic .label {
@@ -4161,6 +4171,20 @@ ol {
 .contact__form button {
 	letter-spacing: 4px;
 	padding: 14px 35px;
+}
+
+.contact__img {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
+.contact__img img {
+	width: 100%;
+	height: 300px;
+	object-fit: cover;
+	border-radius: 8px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 /*--------------------------------- Responsive Media Quaries -----------------------------*/
