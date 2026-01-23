@@ -107,9 +107,11 @@ export default function EditProductPage() {
       formData.append("status", form.status);
 
       // só envia imagem se trocar
-      if (images[0]?.file) {
-        formData.append("image", images[0].file);
-      }
+      if (images[0]?.file) formData.append("image", images[0].file);
+      if (images[1]?.file) formData.append("image2", images[1].file);
+      if (images[2]?.file) formData.append("image3", images[2].file);
+      if (images[3]?.file) formData.append("image4", images[3].file);
+
 
       const res = await fetch(`${url}/products/`, {
         method: "PUT",
