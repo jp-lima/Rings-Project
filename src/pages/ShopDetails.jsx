@@ -60,6 +60,8 @@ export default function ShopDetails() {
   const [selectedStone, setSelectedStone] = useState('');
   const [productImages, setProductImages] = useState([]);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [loadedImages, setLoadedImages] = useState({});
+
   const url = import.meta.env.VITE_API_URL;
   const { id } = useParams();
 
@@ -178,20 +180,12 @@ export default function ShopDetails() {
 
     setProductImages([]);
 
-    const urls = [1, 2, 3, 4].map(
-      (i) => `${url}/products/${id}/image/${i}`
-    );
-
-    urls.forEach((src) => {
-      const img = new Image();
-      img.src = src;
-
-      img.onload = () => {
-        setProductImages((prev) =>
-          prev.includes(src) ? prev : [...prev, src]
-        );
-      };
-    });
+    setProductImages([
+      `${url}/products/${id}/image/1`,
+      `${url}/products/${id}/image/2`,
+      `${url}/products/${id}/image/3`,
+      `${url}/products/${id}/image/4`,
+    ]);
   },
     [id, url]);
   const navigate = useNavigate();
@@ -292,7 +286,7 @@ export default function ShopDetails() {
                       <div className="tab-pane active" id="tabs-1" role="tabpanel">
                         <div className="product__details__pic__item">
                           <img
-                            src={`${url}/products/${id}/image/1`}
+                            src={productImages[selectedImageIndex] || `${url}/products/${id}/image/1`}
                             alt={product.name}
                             style={{ width: "100%" }}
                             onError={(e) => {
@@ -306,20 +300,68 @@ export default function ShopDetails() {
                       {productImages.length > 0 && (
                         <div style={{ display: "flex", gap: "10px", marginTop: "15px" }}>
                           {productImages.map((img, index) => (
-                            <img
-                              key={img}
-                              src={img}
-                              alt={`Imagem adicional ${index + 1}`}
+                            <div
+                              key={index}
                               style={{
-                                width: "70px",
-                                height: "70px",
-                                objectFit: "cover",
+                                width: 70,
+                                height: 70,
                                 borderRadius: "6px",
+                                overflow: "hidden",
+                                position: "relative",
+                                border:
+                                  selectedImageIndex === index
+                                    ? "2px solid #d4a574"
+                                    : "1px solid #ccc",
                               }}
-                            />
+                              onClick={() => setSelectedImageIndex(index)}
+                            >
+                              {/* LOADING */}
+                              {!loadedImages[index] && (
+                                <div
+                                  style={{
+                                    position: "absolute",
+                                    inset: 0,
+                                    background: "#eee",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    fontSize: "12px",
+                                    color: "#999",
+                                  }}
+                                >
+                                  Carregando…
+                                </div>
+                              )}
+
+                              {/* IMAGEM */}
+                              <img
+                                src={img}
+                                alt={`Imagem ${index + 1}`}
+                                onLoad={() =>
+                                  setLoadedImages((prev) => ({
+                                    ...prev,
+                                    [index]: true,
+                                  }))
+                                }
+                                onError={() =>
+                                  setLoadedImages((prev) => ({
+                                    ...prev,
+                                    [index]: true,
+                                  }))
+                                }
+                                style={{
+                                  width: "100%",
+                                  height: "100%",
+                                  objectFit: "cover",
+                                  display: loadedImages[index] ? "block" : "none",
+                                  cursor: "pointer",
+                                }}
+                              />
+                            </div>
                           ))}
                         </div>
                       )}
+
 
                     </div>
 
