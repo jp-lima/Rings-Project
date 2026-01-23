@@ -60,23 +60,33 @@ export default function ShopDetails() {
   const [selectedStone, setSelectedStone] = useState('');
   const [productImages, setProductImages] = useState([]);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const MAX_RETRIES = 10;
   const [thumbRetry, setThumbRetry] = useState({});
   const [thumbLoaded, setThumbLoaded] = useState({});
+  const [thumbHidden, setThumbHidden] = useState({});
+  const [thumbAttempts, setThumbAttempts] = useState({});
 
   const url = import.meta.env.VITE_API_URL;
   const { id } = useParams();
   function retryThumb(index) {
-    // resetar estado antes de tentar novamente
-    setThumbLoaded(prev => ({
-      ...prev,
-      [index]: false,
-    }));
+    setThumbAttempts(prev => {
+      const attempts = (prev[index] || 0) + 1;
 
-    setThumbRetry(prev => ({
-      ...prev,
-      [index]: Date.now(),
-    }));
+      if (attempts > MAX_RETRIES) {
+        // parou de tentar → esconde
+        setThumbHidden(h => ({ ...h, [index]: true }));
+        return prev;
+      }
+
+      setThumbRetry(r => ({
+        ...r,
+        [index]: Date.now(),
+      }));
+
+      return { ...prev, [index]: attempts };
+    });
   }
+
 
 
 
@@ -318,13 +328,14 @@ export default function ShopDetails() {
                       <div className="tab-pane active" id="tabs-1" role="tabpanel">
                         <div className="product__details__pic__item">
                           <img
-                            src={productImages[selectedImageIndex] || `${url}/products/${id}/image/1`}
+                            src={`${url}/products/${id}/image/${selectedImageIndex + 1}`}
                             alt={product.name}
-                            style={{ width: "100%" }}
+                            style={{ width: "100%", borderRadius: 8 }}
                             onError={(e) => {
                               e.target.src = "/img/placeholder.png";
                             }}
                           />
+
 
 
                         </div>
@@ -332,6 +343,8 @@ export default function ShopDetails() {
                       {productImages.length > 0 && (
                         <div style={{ display: "flex", gap: "10px", marginTop: "15px" }}>
                           {productImages.map((img, index) => {
+                            if (thumbHidden[index]) return null;
+
                             const retry = thumbRetry[index] || 0;
                             const loaded = thumbLoaded[index];
 
@@ -374,25 +387,36 @@ export default function ShopDetails() {
                                 )}
 
                                 <img
-                                  src={`${img}?r=${retry}`}
+                                  src={`${img}?r=${thumbRetry[index] || 0}`}
                                   alt={`Miniatura ${index + 1}`}
-                                  onLoad={() =>
-                                    setThumbLoaded(prev => ({
-                                      ...prev,
-                                      [index]: true,
-                                    }))
-                                  }
+                                  onLoad={(e) => {
+                                    const isEmpty =
+                                      e.target.naturalWidth === 0 ||
+                                      e.target.currentSrc.endsWith("/ ");
+
+                                    if (isEmpty) {
+                                      // imagem vazia → não tenta mais
+                                      setThumbHidden(prev => ({ ...prev, [index]: true }));
+                                      return;
+                                    }
+
+                                    // imagem válida
+                                    setThumbLoaded(prev => ({ ...prev, [index]: true }));
+                                  }}
                                   onError={() => {
+                                    // erro real → tenta novamente
                                     setTimeout(() => retryThumb(index), 700);
                                   }}
                                   style={{
                                     width: "100%",
                                     height: "100%",
                                     objectFit: "cover",
-                                    opacity: loaded ? 1 : 0,
+                                    opacity: thumbLoaded[index] ? 1 : 0,
                                     transition: "opacity 0.3s ease",
                                   }}
                                 />
+
+
                               </div>
                             );
                           })}
